@@ -1,5 +1,9 @@
 databaseChangeLog:
   - include:
       file: init.sql
+  - include:
+      file: 01-change.sql
+  - include:
+      file: 02-change.sql
 
 
