@@ -7,6 +7,7 @@ import org.hibernate.cfg.Configuration
 import java.time.LocalDate
 
 fun main() {
+
     val sessionFactory = Configuration().configure()
         .addAnnotatedClass(Student::class.java)
         .addAnnotatedClass(HomeAddress::class.java)
