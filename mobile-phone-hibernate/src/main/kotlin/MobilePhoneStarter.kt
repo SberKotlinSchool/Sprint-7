@@ -15,10 +15,10 @@ fun main() {
 
         val mobilePhoneDao = MobilePhoneDao(sessionFactory)
 
-        mobilePhoneDao.save(mobilePhone1)
+        val myId =mobilePhoneDao.save(mobilePhone1)
 
 
-        var phone : MobilePhone? = mobilePhoneDao.findById(26)
+        var phone : MobilePhone? = mobilePhoneDao.findById(myId)
         println("Найден мобильный телефон: $phone \n")
 
 //        var found1 : List<MobilePhone> = mobilePhoneDao.findAll()

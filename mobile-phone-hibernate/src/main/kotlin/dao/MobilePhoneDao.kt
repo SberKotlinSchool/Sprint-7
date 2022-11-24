@@ -6,11 +6,12 @@ import org.hibernate.SessionFactory
 class MobilePhoneDao(val sessionFactory: SessionFactory ) {
 
 
-    fun save(mobilePhone: MobilePhone) {
+    fun save(mobilePhone: MobilePhone): Long {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            session.save(mobilePhone)
+            val phoneId = session.save(mobilePhone) as Long
             session.transaction.commit()
+            return phoneId
         }
     }
 
