@@ -5,8 +5,8 @@ import java.sql.DriverManager
 fun main () {
 
     val connection = DriverManager.getConnection(
-        "jdbc:postgresql://10.56.83.49:5433/tkp_dev6",
-        "123",
+        "jdbc:postgresql://localhost:5432/postgres",
+        "postgres",
         "123"
     )
 
