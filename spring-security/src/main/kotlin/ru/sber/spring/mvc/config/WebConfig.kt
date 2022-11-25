@@ -15,7 +15,7 @@ import ru.sber.spring.mvc.servlet.AuthServlet
 @ComponentScan
 class WebConfig {
 
-    @Bean
+    //@Bean
     fun authServlet(authService: AuthService): ServletRegistrationBean<AuthServlet>? {
         val regBean = ServletRegistrationBean<AuthServlet>()
         regBean.order = 1
@@ -32,7 +32,7 @@ class WebConfig {
         return regBean
     }
 
-    @Bean
+    //@Bean
     fun authFilter(): FilterRegistrationBean<AuthFilter>? {
         val regBean = FilterRegistrationBean<AuthFilter>()
         regBean.order = 2
