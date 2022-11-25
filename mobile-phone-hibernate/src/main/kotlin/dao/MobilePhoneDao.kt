@@ -3,7 +3,7 @@ package dao
 import entity.MobilePhone
 import org.hibernate.SessionFactory
 
-class MobilePhoneDao(val sessionFactory: SessionFactory ) {
+class MobilePhoneDao(val sessionFactory: SessionFactory) {
 
 
     fun save(mobilePhone: MobilePhone): Long {
@@ -12,6 +12,14 @@ class MobilePhoneDao(val sessionFactory: SessionFactory ) {
             val phoneId = session.save(mobilePhone) as Long
             session.transaction.commit()
             return phoneId
+        }
+    }
+
+    fun update(mobilePhone: MobilePhone) {
+        sessionFactory.openSession().use { session ->
+            session.beginTransaction()
+            session.update(mobilePhone)
+            session.transaction.commit()
         }
     }
 
@@ -56,6 +64,14 @@ class MobilePhoneDao(val sessionFactory: SessionFactory ) {
             session.transaction.commit()
         }
         return result
+    }
+
+    fun delete(mobilePhone: MobilePhone) {
+        sessionFactory.openSession().use { session ->
+            session.beginTransaction()
+            session.delete(mobilePhone)
+            session.transaction.commit()
+        }
     }
 }
 
