@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import javax.persistence.*
 
 @Entity
-class User(
+class UserCredential(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
@@ -23,14 +23,14 @@ class User(
     }
 }
 
-class UserDetailsAdapter(private val user: User) : UserDetails {
+class UserDetailsAdapter(private val user: UserCredential) : UserDetails {
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
         return user.groups.split(",").map(::SimpleGrantedAuthority).toMutableList()
     }
 
     override fun getPassword(): String = user.password
 
-    override fun getUsername(): String = user.password
+    override fun getUsername(): String = user.username
 
     override fun isAccountNonExpired(): Boolean = true
 

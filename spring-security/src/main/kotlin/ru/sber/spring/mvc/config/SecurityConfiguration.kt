@@ -7,6 +7,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
+import org.springframework.security.crypto.password.NoOpPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import ru.sber.spring.mvc.service.CustomUserDetailService
@@ -56,11 +57,22 @@ class SecurityConfiguration {
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
-        return PasswordEncoderFactories.createDelegatingPasswordEncoder()
+        //return PasswordEncoderFactories.createDelegatingPasswordEncoder()
+        return NoOpPasswordEncoder.getInstance()
     }
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain? {
+
+        http
+            .csrf()
+            .ignoringAntMatchers("/h2/*")
+
+        http
+            .headers()
+            .frameOptions()
+            .sameOrigin()
+            .disable()
 
         http
             .authorizeHttpRequests()
@@ -70,15 +82,6 @@ class SecurityConfiguration {
             .formLogin {
                 it.loginProcessingUrl("/login")
             }
-
-        http
-            .csrf()
-            .ignoringAntMatchers("/h2-console/*")
-
-        http
-            .headers()
-            .frameOptions()
-            .sameOrigin()
 
         return http.build()
     }
