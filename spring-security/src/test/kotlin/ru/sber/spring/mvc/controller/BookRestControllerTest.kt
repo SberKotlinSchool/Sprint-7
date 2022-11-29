@@ -6,16 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
-import org.springframework.http.HttpStatus
+import org.springframework.http.*
 import org.springframework.test.annotation.DirtiesContext
+import org.springframework.test.context.ActiveProfiles
+import org.springframework.util.LinkedMultiValueMap
+import org.springframework.util.MultiValueMap
 import ru.sber.spring.mvc.model.Book
 import ru.sber.spring.mvc.model.ErrorMessage
 import ru.sber.spring.mvc.service.BookService
-import java.time.LocalDateTime
 
+@ActiveProfiles("integration-test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 internal class BookRestControllerTest {
@@ -27,12 +27,27 @@ internal class BookRestControllerTest {
     private lateinit var restTemplate: TestRestTemplate
 
     @Autowired
-    private lateinit var bookService: BookService;
+    private lateinit var bookService: BookService
 
-    private fun getHeaders(): HttpHeaders {
+    /**
+     * https://sysout.ru/testresttemplate-s-avtorizatsiej/
+     */
+    private fun getCookieForUser(username: String, password: String, loginUrl: String): String? {
+        val form: MultiValueMap<String, String> = LinkedMultiValueMap()
+
+        form.set("username", username)
+        form.set("password", password)
+
+        val loginResponse: ResponseEntity<String> =
+            restTemplate.postForEntity(loginUrl, HttpEntity(form, HttpHeaders()), String::class.java)
+
+        return loginResponse.headers["Set-Cookie"]?.get(0)
+    }
+
+    private fun getHeadersForAdmin(): HttpHeaders {
+        val cookieForUser = getCookieForUser("admin", "admin", "/login")
         val httpHeaders = HttpHeaders()
-        val expDate = LocalDateTime.now().plusMinutes(5).toString()
-        httpHeaders.add("Cookie", "auth=${expDate}")
+        httpHeaders.add("Cookie", cookieForUser)
         return httpHeaders
     }
 
@@ -41,7 +56,7 @@ internal class BookRestControllerTest {
         val book = Book(name = "new book", author = "Pushkin")
         val resp =
             restTemplate.postForEntity(
-                "http://localhost:${port}/rest/book/add", HttpEntity(book, getHeaders()), Book::class.java
+                "http://localhost:${port}/rest/book/add", HttpEntity(book, getHeadersForAdmin()), Book::class.java
             )
 
         assertNotNull(resp.body?.id)
@@ -56,7 +71,7 @@ internal class BookRestControllerTest {
         val resp = restTemplate.exchange(
             "http://localhost:${port}/rest/book/list",
             HttpMethod.GET,
-            HttpEntity(null, getHeaders()),
+            HttpEntity(null, getHeadersForAdmin()),
             List::class.java
         )
 
@@ -71,7 +86,7 @@ internal class BookRestControllerTest {
         val resp = restTemplate.exchange(
             "http://localhost:${port}/rest/book/${id}/view",
             HttpMethod.GET,
-            HttpEntity(null, getHeaders()),
+            HttpEntity(null, getHeadersForAdmin()),
             ErrorMessage::class.java
         )
 
@@ -87,7 +102,7 @@ internal class BookRestControllerTest {
         val resp = restTemplate.exchange(
             "http://localhost:${port}/rest/book/${id}/view",
             HttpMethod.GET,
-            HttpEntity(null, getHeaders()),
+            HttpEntity(null, getHeadersForAdmin()),
             Book::class.java
         )
 
@@ -105,7 +120,7 @@ internal class BookRestControllerTest {
         val resp =
             restTemplate.postForEntity(
                 "http://localhost:${port}/rest/book/${book.id}/edit",
-                HttpEntity(book, getHeaders()),
+                HttpEntity(book, getHeadersForAdmin()),
                 Book::class.java
             )
 
@@ -122,7 +137,7 @@ internal class BookRestControllerTest {
         val resp = restTemplate.exchange(
             "http://localhost:${port}/rest/book/${book.id}/delete",
             HttpMethod.DELETE,
-            HttpEntity(null, getHeaders()),
+            HttpEntity(null, getHeadersForAdmin()),
             Boolean::class.java
         )
         resp.body?.let { assertTrue(it) }

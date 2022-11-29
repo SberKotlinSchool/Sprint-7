@@ -18,8 +18,9 @@
             <td th:utext="${book.id}"></td>
             <td th:utext="${book.name}"></td>
             <td th:utext="${book.author}"></td>
+            <td><a th:href="@{/book/__${book.id}__/delete}">Delete</a></td>
         </tr>
     </TABLE>
-    <div><a href="/book">back</a></div>
+    <div><a href="/">back</a></div>
 </body>
 </html>

@@ -1,12 +1,14 @@
 package ru.sber.spring.mvc.config
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.env.Environment
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.NoOpPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
@@ -15,37 +17,13 @@ import ru.sber.spring.mvc.service.CustomUserDetailService
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled=true)
 class SecurityConfiguration {
 
-//    @Bean
-//    fun dataSource(): DataSource {
-//        return EmbeddedDatabaseBuilder()
-//            .setType(EmbeddedDatabaseType.H2)
-//            .addScript(JdbcDaoImpl.DEFAULT_USER_SCHEMA_DDL_LOCATION)
-//            .build()
-//    }
-//
-//    @Bean
-//    fun users(dataSource: DataSource, passwordEncoder: PasswordEncoder): UserDetailsManager? {
-//        val users = JdbcUserDetailsManager(dataSource)
-//        getUsers(passwordEncoder).forEach(users::createUser)
-//        return users
-//    }
+    @Autowired
+    private lateinit var env: Environment
 
-//    private fun getUsers(passwordEncoder: PasswordEncoder): List<UserDetails> {
-//        return listOf(
-//            User
-//                .withUsername("admin")
-//                .password(passwordEncoder.encode("admin"))
-//                .roles("ADMIN")
-//                .build(),
-//            User
-//                .withUsername("user")
-//                .password(passwordEncoder.encode("user"))
-//                .roles("USER")
-//                .build()
-//        )
-//    }
+    fun isIntegrationTest():Boolean = env.activeProfiles.any { "integration-test".equals(it) }
 
     @Bean
     fun authProvider(detailService: CustomUserDetailService): AuthenticationProvider {
@@ -57,16 +35,21 @@ class SecurityConfiguration {
 
     @Bean
     fun passwordEncoder(): PasswordEncoder {
-        //return PasswordEncoderFactories.createDelegatingPasswordEncoder()
         return NoOpPasswordEncoder.getInstance()
     }
 
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain? {
 
-        http
-            .csrf()
-            .ignoringAntMatchers("/h2/*")
+        if (isIntegrationTest()) {
+            http
+                .csrf()
+                .disable()
+        } else {
+            http
+                .csrf()
+                .ignoringAntMatchers("/h2/*")
+        }
 
         http
             .headers()
@@ -76,13 +59,20 @@ class SecurityConfiguration {
 
         http
             .authorizeHttpRequests()
-            .antMatchers("/book**", "/rest/book**")
-            .authenticated()
+            .antMatchers("/book/**")
+            .hasAnyAuthority("ROLE_ADMIN","ROLE_READ","ROLE_WRITE")
+            .and()
+            .authorizeHttpRequests()
+            .antMatchers("/rest/book**")
+            .hasAuthority("ROLE_USER")
+            //.authenticated()
             .and()
             .formLogin {
                 it.loginProcessingUrl("/login")
             }
+            .logout()
 
         return http.build()
     }
+
 }
