@@ -1,0 +1,7 @@
+INSERT INTO USER_CREDENTIAL (USERNAME, PASSWORD, GROUPS)
+VALUES ('admin', 'admin', 'ROLE_ADMIN,ROLE_REST'),
+       ('user1', '1', 'ROLE_READ'),
+       ('user2', '2', 'ROLE_READ,ROLE_WRITE')
+;
+
+
