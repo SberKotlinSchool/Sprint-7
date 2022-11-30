@@ -58,9 +58,16 @@
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-stdlib-js</artifactId>
+            <version>${kotlin.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
+        <sourceDirectory>src/main/kotlin</sourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -72,6 +79,7 @@
                         <phase>compile</phase>
                         <goals>
                             <goal>compile</goal>
+                            <goal>js</goal>
                         </goals>
                     </execution>
                     <execution>
@@ -79,6 +87,7 @@
                         <phase>test-compile</phase>
                         <goals>
                             <goal>test-compile</goal>
+                            <goal>test-js</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -104,10 +113,12 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>4.5.0</version>
                 <configuration>
-                    <changeLogFile>db.changelog-master.yaml</changeLogFile>
-                    <url>jdbc:postgresql://localhost:5432/db</url>
+                    <changeLogFile>${basedir}/src/main/resources/db.changelog-master.yaml</changeLogFile>
+                    <changeLogDirectory>${basedir}/src/main/resources/</changeLogDirectory>
+<!--                    <url>jdbc:postgresql://10.56.83.49:5433/tkp_dev6</url>-->
+                    <url>jdbc:postgresql://localhost:5432/postgres</url>
                     <username>postgres</username>
-                    <password>postgres</password>
+                    <password>123</password>
                 </configuration>
             </plugin>
         </plugins>
