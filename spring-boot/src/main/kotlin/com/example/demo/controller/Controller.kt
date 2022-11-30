@@ -1,3 +1,8 @@
 package com.example.demo.controller
 
-class Controller
+import org.springframework.stereotype.Controller
+
+@Controller
+class EntityController(){
+
+}
