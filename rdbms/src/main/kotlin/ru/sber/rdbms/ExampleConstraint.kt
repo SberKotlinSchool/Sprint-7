@@ -12,12 +12,12 @@ fun main() {
 
     connection.use {
         val autoCommit = it.autoCommit
-        val transfer = TransferOptimisticLock(it)
+        val transfer = TransferConstraint(it)
         try {
             it.autoCommit = false
-            transfer.transfer(1, 2, 100)
+            transfer.transfer(1, 2, 1000)
             it.commit()
-            transfer.transfer(1, 2, 100)
+            transfer.transfer(1, 2, 1000)
             it.commit()
         } catch (exception: SQLException) {
             println(exception.message)
@@ -28,5 +28,3 @@ fun main() {
         }
     }
 }
-
-
