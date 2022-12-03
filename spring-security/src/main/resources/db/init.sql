@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS users
 );
 
 insert into users (id, login, password) values
-    (1, 'ivan', '$2y$10$PfQbnYEq9.1qtZ/wZmP6t.VVfajSkYsuxnCvoT0xySxQ9qV3oIFEW'),
-    (2, 'inna', '$2y$08$SLMe/h7yjt1NUCwPnXX7gOfbsP8Ey2wPz2F0xu6VIct8AkDpiRfGa');
+    (1, 'user1', '$2y$10$PfQbnYEq9.1qtZ/wZmP6t.VVfajSkYsuxnCvoT0xySxQ9qV3oIFEW'),
+    (2, 'user2', '$2y$08$SLMe/h7yjt1NUCwPnXX7gOfbsP8Ey2wPz2F0xu6VIct8AkDpiRfGa');
 
 CREATE TABLE IF NOT EXISTS role
 (

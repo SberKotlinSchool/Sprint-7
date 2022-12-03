@@ -46,13 +46,13 @@ class AddressBookMVCController @Autowired constructor(val service: AddressBookSe
     }
 
     @GetMapping("/{id}/view")
-    fun viewPerson(@PathVariable id: Int, model: Model): String {
+    fun viewPerson(@PathVariable id: Long, model: Model): String {
         model.addAttribute("person", service.getPersonById(id))
         return "view"
     }
 
     @GetMapping("/{id}/edit")
-    fun editPerson(@PathVariable id: Int, model: Model): String {
+    fun editPerson(@PathVariable id: Long, model: Model): String {
         model.addAttribute("person", service.getPersonById(id))
         return "edit"
     }
@@ -67,7 +67,7 @@ class AddressBookMVCController @Autowired constructor(val service: AddressBookSe
     }
 
     @GetMapping("/{id}/delete")
-    fun deletePerson(@PathVariable id: Int, model: Model): String {
+    fun deletePerson(@PathVariable id: Long, model: Model): String {
         service.deletePerson(id)
         return "redirect:/app/list"
     }

@@ -19,6 +19,4 @@ class LoginService @Autowired constructor(val repository: LoginRepository) : Use
             .authorities(*user.roles.map { it.role }.toTypedArray())
             .build()
     }
-
-
 }

@@ -8,19 +8,19 @@ import java.util.concurrent.atomic.AtomicInteger
 interface AddressBookRepository {
     fun add(person: Person)
     fun getPersons(fio: String?, address: String?, phone: String?, email: String?): List<Person>
-    fun getPersonById(id: Int): Person?
+    fun getPersonById(id: Long): Person?
     fun updatePerson(person: Person)
-    fun deletePerson(id: Int)
+    fun deletePerson(id: Long)
 }
 
 @Repository
 class AddressBookRepositoryImpl : AddressBookRepository {
-    private val addressBook = ConcurrentHashMap<Int, Person>()
+    private val addressBook = ConcurrentHashMap<Long, Person>()
     private val idGen: AtomicInteger = AtomicInteger(0)
 
     override fun add(person: Person) {
         val id = idGen.incrementAndGet()
-        addressBook[id] = person.copy(id = id)
+        addressBook[id.toLong()] = person.copy(id = id.toLong())
     }
 
 
@@ -33,13 +33,13 @@ class AddressBookRepositoryImpl : AddressBookRepository {
         return result
     }
 
-    override fun getPersonById(id: Int): Person? = addressBook[id]
+    override fun getPersonById(id: Long): Person? = addressBook[id]
 
     override fun updatePerson(person: Person) {
         addressBook[person.id!!] = person
     }
 
-    override fun deletePerson(id: Int) {
+    override fun deletePerson(id: Long) {
         addressBook.remove(id)
     }
 }

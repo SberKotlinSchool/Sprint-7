@@ -38,7 +38,7 @@ class AddressBookRestController @Autowired constructor(val service: AddressBookS
     }
 
     @GetMapping("/{id}/view")
-    fun viewPerson(@PathVariable id: Int): ResponseEntity<Person?> {
+    fun viewPerson(@PathVariable id: Long): ResponseEntity<Person?> {
         return ResponseEntity.ok(service.getPersonById(id))
     }
 
@@ -49,7 +49,7 @@ class AddressBookRestController @Autowired constructor(val service: AddressBookS
     }
 
     @DeleteMapping("/{id}/delete")
-    fun deletePerson(@PathVariable id: Int) {
+    fun deletePerson(@PathVariable id: Long) {
         service.deletePerson(id)
     }
 }

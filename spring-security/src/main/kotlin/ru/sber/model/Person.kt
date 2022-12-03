@@ -5,7 +5,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 @Entity
-data class Client(
+data class Person(
     @Id
     @GeneratedValue
     var id: Long? = 1,
@@ -18,7 +18,7 @@ data class Client(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as Client
+        other as Person
 
         if (id != other.id) return false
         if (fio != other.fio) return false

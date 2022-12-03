@@ -8,9 +8,9 @@ import ru.sber.repository.AddressBookRepository
 interface AddressBookService {
     fun add(person: Person)
     fun getPersons(fio: String?, address: String?, phone: String?, email: String?): List<Person>
-    fun getPersonById(id: Int): Person?
+    fun getPersonById(id: Long): Person?
     fun updatePerson(person: Person)
-    fun deletePerson(id: Int)
+    fun deletePerson(id: Long)
 }
 
 
@@ -23,13 +23,13 @@ class AddressBookServiceImpl @Autowired constructor(val repository: AddressBookR
     override fun getPersons(fio: String?, address: String?, phone: String?, email: String?): List<Person> =
         repository.getPersons(fio, address, phone, email)
 
-    override fun getPersonById(id: Int): Person? = repository.getPersonById(id)
+    override fun getPersonById(id: Long): Person? = repository.getPersonById(id)
 
     override fun updatePerson(person: Person) {
         repository.updatePerson(person)
     }
 
-    override fun deletePerson(id: Int) {
+    override fun deletePerson(id: Long) {
         repository.deletePerson(id)
     }
 }
