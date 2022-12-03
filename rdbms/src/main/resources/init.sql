@@ -9,4 +9,3 @@ create table account1
     version int
 );
 
-

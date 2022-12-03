@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <title th:text="@{'View '+ ${author.toListString()}}"></title>
+</head>
+<body>
+<h1 th:text="@{'View '+ ${author.toListString()}}"></h1>
+<p>
+    <a href="/app/list">Back to list</a>
+</p>
+<!--/*
+    Получим флаг доступа и воспользуемся им для установки readonly свойства у полей
+ */-->
+<form method="post" th:with="notEditable=!${#authorization.expr('hasPermission(#vars.phone,''DELETE'')')}">
+    <input
+            type="hidden"
+            th:name="${_csrf.parameterName}"
+            th:value="${_csrf.token}" />
+    <!--/*
+        Только для роли админа отобразим дополнительную информацию
+    */-->
+    <div sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_API')">
+        <h2 th:text="@{'Id: '+ ${author.id}}"></h2>
+        <h3 th:text="@{'Owner: '+ ${author.owner}}"></h3>
+    </div>
+
+    <p>
+        <label>FirstName:</label>
+        <input type="text" name="name" th:readonly="${notEditable}" th:value="${author.firstName}"/>
+    </p>
+    <p>
+        <label>SecondName:</label>
+        <input type="text" name="name" th:readonly="${notEditable}" th:value="${author.secondName}"/>
+    </p>
+
+    <div sec:authorize-acl="${author} :: 'DELETE'">
+        <button type="submit">Update</button>
+        |
+        <a th:href="@{ '/app/remove/' + ${author.id} }" style="color:red">Remove</a>
+    </div>
+</form>
+</body>
+</html>

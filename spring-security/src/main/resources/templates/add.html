@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <title>Add</title>
+</head>
+<body>
+<h1>Add</h1>
+<p>
+    <a href="/api/list">Back to list</a>
+</p>
+<form method="post">
+
+    <p>
+        <label>FirstName:</label>
+        <input type="text" name="firstName" placeholder="firstName"/>
+    </p>
+    <p>
+        <label>SecondName:</label>
+        <input type="text" name="secondName" placeholder="secondName"/>
+    </p>
+    <!--/*
+        Только для роли админа отобразим возможность выбора видимости записи
+    */-->
+    <div sec:authorize="hasAnyRole('ROLE_ADMIN', 'ROLE_API')">
+        <label for="public">Public</label>
+        <input id="public" type="radio" name="public" value="true" checked="checked"/>
+        <label for="private">Private</label>
+        <input id="private" type="radio" name="public" value="false"/>
+    </div>
+    <button type="submit">add</button>
+</form>
+</body>
+</html>
