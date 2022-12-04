@@ -1,4 +1,4 @@
-package entities
+package ru.sber.study.kotlin.orm.persistence.entities
 
 import javax.persistence.*
 

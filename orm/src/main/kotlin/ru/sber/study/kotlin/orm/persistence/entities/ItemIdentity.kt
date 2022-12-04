@@ -1,9 +1,6 @@
-package entities
+package ru.sber.study.kotlin.orm.persistence.entities
 
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.OneToOne
+import javax.persistence.*
 
 @Entity(name = "item_identity")
 data class ItemIdentity(
@@ -14,5 +11,6 @@ data class ItemIdentity(
     @OneToOne
     var developer: Developer,
 
+    @Column(name = "catalognumber")
     var catalogNumber: String
 )

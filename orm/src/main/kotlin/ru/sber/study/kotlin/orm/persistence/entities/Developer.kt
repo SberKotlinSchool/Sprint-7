@@ -1,4 +1,4 @@
-package entities
+package ru.sber.study.kotlin.orm.persistence.entities
 
 import org.hibernate.annotations.NaturalId
 import javax.persistence.Column
@@ -7,7 +7,7 @@ import javax.persistence.GeneratedValue
 import javax.persistence.Id
 
 @Entity
-data class Performer(
+data class Developer(
     @Id
     @GeneratedValue
     var id: Long = 0,
@@ -15,8 +15,4 @@ data class Performer(
     @NaturalId
     @Column(length = 100)
     var name: String
-) {
-    override fun toString(): String {
-        return name
-    }
-}
+)
