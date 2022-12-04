@@ -5,15 +5,15 @@
 CREATE TABLE IF NOT EXISTS users
 (
     id bigint NOT NULL,
-    login varchar(255),
-    password varchar(255),
+    login varchar(255) NOT NULL,
+    password varchar(255) NOT NULL,
     role varchar(255),
     CONSTRAINT users_pkey PRIMARY KEY (id)
 );
 
 insert into users (id, login, password) values
-    (1, 'user1', '$2y$10$PfQbnYEq9.1qtZ/wZmP6t.VVfajSkYsuxnCvoT0xySxQ9qV3oIFEW'),
-    (2, 'user2', '$2y$08$SLMe/h7yjt1NUCwPnXX7gOfbsP8Ey2wPz2F0xu6VIct8AkDpiRfGa');
+    (1, 'user1', '$2a$12$EDXtLIyJa8SK6VZy3UEshuY.z/5x5cqagbbAjmdcUYRx6NMjbBNvq'),
+    (2, 'user2', '$2a$12$s6pSn7y98sAZ.55MLlJGseTYxYXxD.JifgLjZhbMJe1v1U50kpRuS');
 
 CREATE TABLE IF NOT EXISTS role
 (
@@ -31,14 +31,10 @@ CREATE TABLE IF NOT EXISTS users_roles
 (
     user_id bigint NOT NULL,
     roles_id bigint NOT NULL,
-    CONSTRAINT fk4653ut8m260oyset67f4o5dfs FOREIGN KEY (roles_id)
-    REFERENCES role (id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION,
-    CONSTRAINT fkeqn66nas8rv26sso83h5k3n69 FOREIGN KEY (user_id)
+    FOREIGN KEY (roles_id)
+    REFERENCES role (id) MATCH SIMPLE,
+    FOREIGN KEY (user_id)
     REFERENCES users (id) MATCH SIMPLE
-    ON UPDATE NO ACTION
-    ON DELETE NO ACTION
     );
 
 insert into users_roles (user_id, roles_id) values

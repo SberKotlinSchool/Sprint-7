@@ -2,6 +2,7 @@ package ru.sber.controllers
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.ui.Model
 import org.springframework.validation.BindingResult
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -48,6 +49,7 @@ class AddressBookRestController @Autowired constructor(val service: AddressBookS
         return ResponseEntity.ok(person)
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/delete")
     fun deletePerson(@PathVariable id: Long) {
         service.deletePerson(id)

@@ -3,6 +3,7 @@ package ru.sber
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
@@ -10,9 +11,11 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.annotation.DirtiesContext
 import ru.sber.model.Person
 import java.time.LocalDateTime
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
@@ -36,6 +39,7 @@ class AddressBookRestControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "user", password = "user", roles = ["API"])
     fun addPersonTest() {
         val headers = addHeader()
         addPerson(headers)
@@ -45,6 +49,7 @@ class AddressBookRestControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "user", password = "user", roles = ["API"])
     fun getListTest() {
         val headers = addHeader()
         addPerson(headers)
@@ -55,6 +60,7 @@ class AddressBookRestControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "user", password = "user", roles = ["API"])
     fun viewTest() {
         val headers = addHeader()
         addPerson(headers)
@@ -65,6 +71,7 @@ class AddressBookRestControllerTests {
     }
 
     @Test
+    @WithMockUser(username = "user", password = "user", roles = ["API"])
     fun editPersonTest() {
         val headers = addHeader()
         addPerson(headers)
@@ -82,11 +89,22 @@ class AddressBookRestControllerTests {
     }
 
     @Test
-    fun deletePersonTest() {
+    @WithMockUser(username = "user", password = "user", roles = ["ADMIN"])
+    fun deletePersonWithAdminRoleTest() {
         val headers = addHeader()
         addPerson(headers)
         val resp =
             restTemplate.exchange(url("api/1/delete"), HttpMethod.DELETE, HttpEntity(null, headers), String::class.java)
         assertEquals(HttpStatus.OK, resp.statusCode)
+    }
+
+    @Test
+    @WithMockUser(username = "user", password = "user", roles = ["API"])
+    fun deletePersonTest() {
+        val headers = addHeader()
+        addPerson(headers)
+        val resp =
+            restTemplate.exchange(url("api/1/delete"), HttpMethod.DELETE, HttpEntity(null, headers), String::class.java)
+        assertEquals(HttpStatus.FORBIDDEN, resp.statusCode)
     }
 }

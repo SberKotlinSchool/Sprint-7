@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -29,6 +30,7 @@ class AddressBookMVCControllerTests {
 	}
 
 	@Test
+	@WithMockUser(username = "user", password = "user", roles = ["ADMIN"])
 	fun addPersonFormTest() {
 
 		mockMvc.perform(MockMvcRequestBuilders.get("/app/add"))
@@ -38,6 +40,7 @@ class AddressBookMVCControllerTests {
 	}
 
 	@Test
+	@WithMockUser(username = "user", password = "user", roles = ["ADMIN"])
 	fun addPersonTest() {
 		mockMvc.perform(
 			MockMvcRequestBuilders.post("/app/add")
@@ -51,6 +54,7 @@ class AddressBookMVCControllerTests {
 	}
 
 	@Test
+	@WithMockUser(username = "user", password = "user", roles = ["ADMIN"])
 	fun getListWithoutParamTest() {
 		mockMvc.perform(MockMvcRequestBuilders.get("/app/list"))
 			.andExpect(MockMvcResultMatchers.status().isOk)
@@ -59,6 +63,7 @@ class AddressBookMVCControllerTests {
 	}
 
 	@Test
+	@WithMockUser(username = "user", password = "user", roles = ["ADMIN"])
 	fun getListWithParamTest() {
 		mockMvc.perform(
 			MockMvcRequestBuilders.get("/app/list")
@@ -70,6 +75,7 @@ class AddressBookMVCControllerTests {
 	}
 
 	@Test
+	@WithMockUser(username = "user", password = "user", roles = ["ADMIN"])
 	fun viewTest() {
 		mockMvc.perform(MockMvcRequestBuilders.get("/app/1/view"))
 			.andExpect(MockMvcResultMatchers.status().isOk)
@@ -78,12 +84,14 @@ class AddressBookMVCControllerTests {
 	}
 
 	@Test
+	@WithMockUser(username = "user", password = "user", roles = ["ADMIN"])
 	fun deleteTest() {
 		mockMvc.perform(MockMvcRequestBuilders.get("/app/1/delete"))
 			.andExpect(MockMvcResultMatchers.status().`is`(302))
 	}
 
 	@Test
+	@WithMockUser(username = "user", password = "user", roles = ["ADMIN"])
 	fun editTest() {
 		mockMvc.perform(
 			MockMvcRequestBuilders.post("/app/1/edit")
