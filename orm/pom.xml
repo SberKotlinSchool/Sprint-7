@@ -22,28 +22,15 @@
                 <groupId>org.jetbrains.kotlin</groupId>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <version>${kotlin.version}</version>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <phase>test-compile</phase>
-                        <goals>
-                            <goal>test-compile</goal>
-                        </goals>
-                    </execution>
-                </executions>
                 <configuration>
+                    <args>
+                        <arg>-Xjsr305=strict</arg>
+                    </args>
                     <compilerPlugins>
-                        <plugin>spring</plugin>
                         <plugin>all-open</plugin>
-                        <plugin>jpa</plugin>
+                        <plugin>spring</plugin>
                         <plugin>no-arg</plugin>
+                        <plugin>jpa</plugin>
                     </compilerPlugins>
                     <pluginOptions>
                         <option>all-open:annotation=javax.persistence.Entity</option>
@@ -60,13 +47,13 @@
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-maven-noarg</artifactId>
-            <version>1.5.31</version>
+            <version>${kotlin.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-maven-allopen</artifactId>
-            <version>1.5.31</version>
+            <version>${kotlin.version}</version>
         </dependency>
 
         <dependency>
