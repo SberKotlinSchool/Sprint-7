@@ -40,8 +40,9 @@
                 </executions>
                 <configuration>
                     <compilerPlugins>
-                        <plugin>jpa</plugin>
                         <plugin>all-open</plugin>
+                        <plugin>jpa</plugin>
+                        <plugin>no-arg</plugin>
                     </compilerPlugins>
                     <pluginOptions>
                         <option>all-open:annotation=javax.persistence.Entity</option>
