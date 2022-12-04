@@ -1,26 +1,24 @@
 package ru.sber
 
-import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
-import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType
 import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.annotation.DirtiesContext
-import ru.sber.model.Person
-import java.time.LocalDateTime
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 
-
+@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class AddressBookRestControllerTests {
-
+class AddressBookRestController {
     @LocalServerPort
     private val port: Int = 0
 
@@ -31,80 +29,63 @@ class AddressBookRestControllerTests {
         return "http://localhost:${port}/${path}"
     }
 
-    fun addHeader(): HttpHeaders = HttpHeaders().also { it.add("Cookie", "auth=${LocalDateTime.now()}") }
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
-    fun addPerson(headers: HttpHeaders) {
-        val person = Person(1, "ФИО", "Адрес", "911", "email@gmail.com")
-        restTemplate.postForEntity(url("api/add"), HttpEntity(person, headers), Person::class.java)
+    val jsonData = """{"fio" : "FIO", "address" : "adress"}"""
+
+
+    @BeforeEach
+    fun setUp() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/api/add")
+                .content(jsonData)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
     }
 
     @Test
     @WithMockUser(username = "user", password = "user", roles = ["API"])
-    fun addPersonTest() {
-        val headers = addHeader()
-        addPerson(headers)
-        val person = Person(null, "ФИО", "Адрес", "912", "email1@gmail.com")
-        val resp = restTemplate.postForEntity(url("api/add"), HttpEntity(person, headers), Person::class.java)
-        assertEquals(HttpStatus.OK, resp.statusCode)
+    fun addClient() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/api/add")
+                .content(jsonData)
+                .contentType(MediaType.APPLICATION_JSON)
+        )   .andExpect(jsonPath("$.address").value("adress"))
+            .andExpect(jsonPath("$.fio").value("FIO"))
+            .andExpect(MockMvcResultMatchers.status().isOk)
     }
+
 
     @Test
     @WithMockUser(username = "user", password = "user", roles = ["API"])
-    fun getListTest() {
-        val headers = addHeader()
-        addPerson(headers)
-        val response =
-            restTemplate.exchange(url("api/list"), HttpMethod.GET, HttpEntity(null, headers), Array<Person>::class.java)
-        assertEquals(HttpStatus.OK, response.statusCode)
-        assertEquals(1, response.body?.size)
+    fun getAllClients() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get(url("api/list"))
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
+            .andExpect(jsonPath("$[0].address").value("adress"))
+            .andExpect(jsonPath("$[0].fio").value("FIO"))
     }
+
 
     @Test
     @WithMockUser(username = "user", password = "user", roles = ["API"])
-    fun viewTest() {
-        val headers = addHeader()
-        addPerson(headers)
-        val resp =
-            restTemplate.exchange(url("api/1/view"), HttpMethod.GET, HttpEntity(null, headers), Person::class.java)
-        assertEquals(HttpStatus.OK, resp.statusCode)
-        assertEquals("ФИО", resp.body?.fio)
+    fun deleteClientWithoutRight() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/api/1/delete")
+        )
+            .andExpect(MockMvcResultMatchers.status().isForbidden)
     }
 
-    @Test
-    @WithMockUser(username = "user", password = "user", roles = ["API"])
-    fun editPersonTest() {
-        val headers = addHeader()
-        addPerson(headers)
-        val person = Person(1, "Иванов", "Морская", "913", "emailEdit@gmail.com")
-        val resp =
-            restTemplate.exchange(url("api/1/edit"), HttpMethod.PUT, HttpEntity(person, headers), String::class.java)
-        assertEquals(HttpStatus.OK, resp.statusCode)
-
-        val response =
-            restTemplate.exchange(url("api/list"), HttpMethod.GET, HttpEntity(null, headers), Array<Person>::class.java)
-        assertEquals("Иванов", response.body?.get(0)!!.fio)
-        assertEquals("Морская", response.body?.get(0)!!.address)
-        assertEquals("913", response.body?.get(0)!!.phone)
-        assertEquals("emailEdit@gmail.com", response.body?.get(0)!!.email)
-    }
 
     @Test
     @WithMockUser(username = "user", password = "user", roles = ["ADMIN"])
-    fun deletePersonWithAdminRoleTest() {
-        val headers = addHeader()
-        addPerson(headers)
-        val resp =
-            restTemplate.exchange(url("api/1/delete"), HttpMethod.DELETE, HttpEntity(null, headers), String::class.java)
-        assertEquals(HttpStatus.OK, resp.statusCode)
-    }
-
-    @Test
-    @WithMockUser(username = "user", password = "user", roles = ["API"])
-    fun deletePersonTest() {
-        val headers = addHeader()
-        addPerson(headers)
-        val resp =
-            restTemplate.exchange(url("api/1/delete"), HttpMethod.DELETE, HttpEntity(null, headers), String::class.java)
-        assertEquals(HttpStatus.FORBIDDEN, resp.statusCode)
+    fun deleteClient() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/api/1/delete")
+        )
+            .andExpect(MockMvcResultMatchers.status().isOk)
     }
 }
