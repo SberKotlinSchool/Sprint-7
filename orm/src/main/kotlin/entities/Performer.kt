@@ -13,7 +13,7 @@ data class Performer(
     var id: Long = 0,
 
     @NaturalId
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     var name: String
 ) {
     override fun toString(): String {

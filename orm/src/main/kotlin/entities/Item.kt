@@ -9,12 +9,13 @@ data class Item(
     var id: Long = 0,
 
     @Enumerated(value = EnumType.STRING)
+    @Column(nullable = false)
     var type: ItemType,
 
     @OneToOne(cascade = [CascadeType.ALL])
     var identity: ItemIdentity,
 
-    @Column(length = 100)
+    @Column(length = 100, nullable = false)
     var name: String,
 
     @ManyToMany(targetEntity = Performer::class, fetch = FetchType.EAGER)
