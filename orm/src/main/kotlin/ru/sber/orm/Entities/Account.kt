@@ -10,15 +10,14 @@ import javax.persistence.*
 @Entity
 class Account(
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_generator")
-    @SequenceGenerator(name="account_generator", sequenceName = "account_seq", allocationSize=1)
-//    @Column(name = "id", updatable = false, nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
     var loanPeriod: Int,
     var loanStart: LocalDate,
     var loanSum: Double,
-    var pz: Double,
+    var overdueSum: Double,
+    var totalDebtSum: Double,
 
     @NaturalId
     var externalId: String,
@@ -28,6 +27,9 @@ class Account(
 
     @UpdateTimestamp
     var updated: LocalDateTime? = null,
+
+    @OneToMany(mappedBy = "accountId", cascade = [CascadeType.REMOVE], fetch = FetchType.LAZY, orphanRemoval = true)
+    var relation: MutableList<RelationshipClientAccount>? = null,
 
     @OneToMany(cascade = [CascadeType.ALL], orphanRemoval = true)
     var issueReason: MutableList<IssueReason>? = null

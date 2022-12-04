@@ -1,10 +1,10 @@
 <hibernate-configuration xmlns="http://www.hibernate.org/xsd/orm/cfg">
     <session-factory>
-        <property name="connection.url">jdbc:postgresql://localhost:5432/loans?createDatabaseIfNotExist=true</property>
+        <property name="connection.url">jdbc:postgresql://localhost:5432/db2?createDatabaseIfNotExist=true</property>
         <property name="connection.driver_class">org.postgresql.Driver</property>
-<!--        <property name="connection.username">test</property>-->
-<!--        <property name="connection.password">test</property>-->
-        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</property>
+        <property name="connection.username">postgres</property>
+        <property name="connection.password">postgres</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL95Dialect</property>
         <property name="connection.pool_size">10</property>
 
         <property name="show_sql">true</property>

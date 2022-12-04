@@ -2,8 +2,12 @@ package ru.sber.orm.Dao
 
 import org.hibernate.SessionFactory
 
-abstract class BaseDao(val sessionFactory: SessionFactory) {
-    fun <T> create(entity: T) {
+abstract class BaseDao<T>(
+    val sessionFactory: SessionFactory,
+    private val entityType: Class<T>
+) {
+
+    fun create(entity: T) {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
             session.save(entity)
@@ -11,7 +15,7 @@ abstract class BaseDao(val sessionFactory: SessionFactory) {
         }
     }
 
-    fun <T> update(entity: T) {
+    fun update(entity: T) {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
             session.update(entity)
@@ -19,7 +23,7 @@ abstract class BaseDao(val sessionFactory: SessionFactory) {
         }
     }
 
-    fun <T> delete(entity: T) {
+    fun delete(entity: T) {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
             session.delete(entity)
@@ -27,24 +31,24 @@ abstract class BaseDao(val sessionFactory: SessionFactory) {
         }
     }
 
-    fun <T> findById(id: Long, entity: Class<T>): T? {
+    open fun findById(id: Long): T? {
         val result: T?
 
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            result = session.get(entity, id)
+            result = session.get(entityType, id)
             session.transaction.commit()
         }
 
         return result
     }
 
-    fun <T> findAll(table: String): List<T>? {
+    fun findAll(table: String): List<T>? {
         val result: List<T>?
 
-        sessionFactory.openSession().use {session ->
+        sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            result = session.createQuery("from $table").list() as? List<T>
+            result = session.createQuery("from $table", entityType).list() as List<T>
             session.transaction.commit()
         }
 

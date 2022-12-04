@@ -1,18 +1,22 @@
 package ru.sber.orm.Entities
 
+import java.io.Serializable
 import javax.persistence.*
 
 @Entity
-@Table(name = "RELATION_ACCOUNT_CLIENT")
+@IdClass(AccountClientId::class)
 class RelationshipClientAccount(
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "rel_generator")
-    @SequenceGenerator(name="rel_generator", sequenceName = "rel_seq", allocationSize=1)
-    val id: Long? = null,
+    @ManyToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    var clientId: Client? = null,
 
-    @ManyToMany(cascade = [CascadeType.ALL])
-    var clientId: MutableList<Client>? = null,
+    @Id
+    @ManyToOne(cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    var accountId: Account? = null,
+) : Serializable
 
-    @ManyToMany(cascade = [CascadeType.ALL])
-    var creditId: MutableList<Account>? = null,
-)
+
+data class AccountClientId(
+    var clientId: Long? = null,
+    var accountId: Long? = null
+) : Serializable

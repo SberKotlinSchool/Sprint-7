@@ -3,7 +3,7 @@ package ru.sber.orm.Dao
 import org.hibernate.SessionFactory
 import ru.sber.orm.Entities.Account
 
-class AccountDao(sessionFactory: SessionFactory): BaseDao(sessionFactory) {
+class AccountDao(sessionFactory: SessionFactory) : BaseDao<Account>(sessionFactory, Account::class.java) {
     fun find(id: Long): Account? {
         val account: Account?
         sessionFactory.openSession().use { session ->

@@ -6,15 +6,17 @@ import javax.persistence.*
 @Entity
 class Client(
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "client_generator")
-    @SequenceGenerator(name="client_generator", sequenceName = "client_seq", allocationSize=1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
     var firstName: String,
     var lastName: String,
     var middleName: String? = null,
     var birthDate: LocalDate,
-    var additionalInfo: SomeAdditionalInfo
+    var additionalInfo: SomeAdditionalInfo,
+
+    @OneToMany(mappedBy = "clientId", cascade = [CascadeType.ALL], fetch = FetchType.LAZY)
+    var relation: MutableList<RelationshipClientAccount>? = null
 
 )
 
