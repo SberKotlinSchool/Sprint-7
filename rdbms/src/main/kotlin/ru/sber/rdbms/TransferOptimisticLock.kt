@@ -51,5 +51,5 @@ class TransferOptimisticLock {
 }
 
 fun main() {
-    TransferOptimisticLock().transfer(1, 2, 10)
+    TransferOptimisticLock().transfer(1, 3, 10)
 }

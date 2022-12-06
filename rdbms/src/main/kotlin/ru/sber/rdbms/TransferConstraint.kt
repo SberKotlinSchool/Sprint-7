@@ -5,9 +5,9 @@ import java.sql.SQLException
 
 object ConnectionProvider {
     fun getConnection() = DriverManager.getConnection(
-        "jdbc:postgresql://localhost:5432/db",
+        "jdbc:postgresql://localhost:5432/kotlin",
         "postgres",
-        "postgres"
+        "pasha222233"
     )
 }
 
