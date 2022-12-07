@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: init.sql
+
+      ## jdbc:h2:tcp:testdb tcp://localhost:
+
+
