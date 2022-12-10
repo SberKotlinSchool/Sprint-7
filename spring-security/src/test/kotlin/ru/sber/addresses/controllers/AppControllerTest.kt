@@ -64,38 +64,11 @@ internal class AppControllerTest {
 
     @Test
     @WithMockUser(username = "admin", roles = ["ADMIN"])
-    fun viewAddressGetTest() {
-        addAddress().also { counter++ }
-        mockMvc.perform(MockMvcRequestBuilders.get("/app/$counter/view"))
-            .andExpect(MockMvcResultMatchers.status().isOk)
-            .andExpect(MockMvcResultMatchers.view().name("view"))
-    }
-
-    @Test
-    @WithMockUser(username = "admin", roles = ["ADMIN"])
-    fun viewAddressGetTestWhenRedirection() {
-        addAddress().also { counter++ }
-        mockMvc.perform(MockMvcRequestBuilders.get("/app/${counter + 1}/view"))
-            .andExpect(MockMvcResultMatchers.status().is3xxRedirection)
-            .andExpect(MockMvcResultMatchers.view().name("redirect:/app/list"))
-    }
-
-    @Test
-    @WithMockUser(username = "admin", roles = ["ADMIN"])
     fun editAddressGetTest() {
         addAddress().also { counter++ }
         mockMvc.perform(MockMvcRequestBuilders.get("/app/$counter/edit"))
             .andExpect(MockMvcResultMatchers.status().isOk)
             .andExpect(MockMvcResultMatchers.view().name("edit"))
-    }
-
-    @Test
-    @WithMockUser(username = "admin", roles = ["ADMIN"])
-    fun editAddressGetTestWhenRedirection() {
-        addAddress().also { counter++ }
-        mockMvc.perform(MockMvcRequestBuilders.get("/app/${counter + 1}/edit"))
-            .andExpect(MockMvcResultMatchers.status().is3xxRedirection)
-            .andExpect(MockMvcResultMatchers.view().name("redirect:/app/list"))
     }
 
     @Test
