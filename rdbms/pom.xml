@@ -61,6 +61,11 @@
     </dependencies>
 
     <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -109,6 +114,13 @@
                     <username>postgres</username>
                     <password>postgres</password>
                 </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>clearCheckSums</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

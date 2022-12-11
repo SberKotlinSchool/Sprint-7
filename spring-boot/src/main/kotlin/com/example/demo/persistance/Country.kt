@@ -12,8 +12,8 @@ data class Country(
     @Id
     @GeneratedValue
     @Column(nullable = false)
-    private val id: Long,
+    val id: Long,
 
     @Column
-    private val name: String?
+    val name: String?
 )

@@ -1,12 +1,15 @@
 package ru.sber.rdbms
 
+import ru.sber.rdbms.Constants.Companion.URL
+import ru.sber.rdbms.Constants.Companion.PASSWORD
+import ru.sber.rdbms.Constants.Companion.USERNAME
 import java.sql.DriverManager
 
 fun main() {
     val connection = DriverManager.getConnection(
-        "jdbc:postgresql://localhost:5432/db",
-        "postgres",
-        "postgres"
+        URL,
+        USERNAME,
+        PASSWORD
     )
     connection.use { conn ->
         val prepareStatement = conn.prepareStatement("select 1")

@@ -1,5 +1,8 @@
 databaseChangeLog:
   - include:
-      file: init.sql
-
+      file: sql/init.sql
+  - include:
+      file: sql/tableBankAccount.sql
+  - include:
+      file: changelog-2.yml
 
