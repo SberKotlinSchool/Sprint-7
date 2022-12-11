@@ -24,7 +24,7 @@ class TransferPessimisticLock {
     }
 
     fun lock(id: Long, conn: Connection) {
-        val prepareStatement1 = conn.prepareStatement("select version from accounts where id = ? for update")
+        val prepareStatement1 = conn.prepareStatement("select version from accounts where id = ? for update nowait")
         prepareStatement1.use { statement ->
             statement.setLong(1, id)
             statement.executeQuery()

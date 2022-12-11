@@ -33,7 +33,6 @@ class TransferOptimisticLock {
                 return it.getInt("version")
             }
         }
-        throw SQLException("account with id=$id not found");
     }
 
     fun doPayment(id: Long, amount: Long, version: Int, conn: Connection) {
@@ -51,5 +50,5 @@ class TransferOptimisticLock {
 }
 
 fun main() {
-    TransferOptimisticLock().transfer(1, 3, 10)
+    TransferOptimisticLock().transfer(5, 3, 10)
 }
