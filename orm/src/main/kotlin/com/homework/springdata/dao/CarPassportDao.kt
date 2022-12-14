@@ -1,51 +1,51 @@
-package com.homework.orm.dao
+package com.homework.springdata.dao
 
-import com.homework.orm.entity.Person
+import com.homework.springdata.entity.CarPassport
 import org.hibernate.SessionFactory
 
-class PersonDao (
+class CarPassportDao (
     private val sessionFactory: SessionFactory
         ) {
-    fun save(person: Person) {
+    fun save(passport: CarPassport) {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            session.save(person)
+            session.save(passport)
             session.transaction.commit()
         }
     }
 
-    fun find(id: Long): Person? {
-        val person: Person?
+    fun find(id: Long): CarPassport? {
+        val passport: CarPassport?
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            person = session.get(Person::class.java, id)
+            passport = session.get(CarPassport::class.java, id)
             session.transaction.commit()
         }
-        return person
+        return passport
     }
 
-    fun findAll(): List<Person> {
-        val persons: List<Person>
+    fun findAll(): List<CarPassport> {
+        val passports: List<CarPassport>
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            persons = session.createQuery("from Person", Person::class.java).list() as List<Person>
+            passports = session.createQuery("from CarPassport", CarPassport::class.java).list() as List<CarPassport>
             session.transaction.commit()
         }
-        return persons
+        return passports
     }
 
-    fun delete(person: Person) {
+    fun delete(passport: CarPassport) {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            session.delete(person)
+            session.delete(passport)
             session.transaction.commit()
         }
     }
 
-    fun update(person: Person) {
+    fun update(passport: CarPassport) {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            session.update(person)
+            session.update(passport)
             session.transaction.commit()
         }
     }

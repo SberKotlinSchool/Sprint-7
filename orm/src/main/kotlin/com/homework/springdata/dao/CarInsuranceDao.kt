@@ -1,51 +1,51 @@
-package com.homework.orm.dao
+package com.homework.springdata.dao
 
-import com.homework.orm.entity.CarPassport
+import com.homework.springdata.entity.CarInsurance
 import org.hibernate.SessionFactory
 
-class CarPassportDao (
+class CarInsuranceDao (
     private val sessionFactory: SessionFactory
         ) {
-    fun save(passport: CarPassport) {
+    fun save(insurance: CarInsurance) {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            session.save(passport)
+            session.save(insurance)
             session.transaction.commit()
         }
     }
 
-    fun find(id: Long): CarPassport? {
-        val passport: CarPassport?
+    fun find(id: Long): CarInsurance? {
+        val insurance: CarInsurance?
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            passport = session.get(CarPassport::class.java, id)
+            insurance = session.get(CarInsurance::class.java, id)
             session.transaction.commit()
         }
-        return passport
+        return insurance
     }
 
-    fun findAll(): List<CarPassport> {
-        val passports: List<CarPassport>
+    fun findAll(): List<CarInsurance> {
+        val insurances: List<CarInsurance>
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            passports = session.createQuery("from CarPassport", CarPassport::class.java).list() as List<CarPassport>
+            insurances = session.createQuery("from CarInsurance", CarInsurance::class.java).list() as List<CarInsurance>
             session.transaction.commit()
         }
-        return passports
+        return insurances
     }
 
-    fun delete(passport: CarPassport) {
+    fun delete(insurance: CarInsurance) {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            session.delete(passport)
+            session.delete(insurance)
             session.transaction.commit()
         }
     }
 
-    fun update(passport: CarPassport) {
+    fun update(insurance: CarInsurance) {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            session.update(passport)
+            session.update(insurance)
             session.transaction.commit()
         }
     }
