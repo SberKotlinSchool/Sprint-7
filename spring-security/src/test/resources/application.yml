@@ -1,12 +1,17 @@
 spring:
   datasource:
-    url: jdbc:h2:file:~/h2db
+    url: jdbc:h2:file:~/h2/h2db
     username: sa
     password: password
     driverClassName: org.h2.Driver
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     defer-datasource-initialization: true
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
   h2:
     console:
       enabled: true
@@ -14,9 +19,3 @@ spring:
   mvc:
     static-path-pattern: classpath:static/
     hiddenmethod.filter.enabled: true
-
-logging:
-  level:
-    org:
-      springframework:
-        security: DEBUG

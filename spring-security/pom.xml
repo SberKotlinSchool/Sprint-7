@@ -111,7 +111,7 @@
                 <version>4.5.0</version>
                 <configuration>
                     <changeLogFile>db/changelog-master.yaml</changeLogFile>
-                    <url>jdbc:h2:file:~/h2db</url>
+                    <url>jdbc:h2:file:~/h2/h2db</url>
                     <username>sa</username>
                     <password>password</password>
                 </configuration>

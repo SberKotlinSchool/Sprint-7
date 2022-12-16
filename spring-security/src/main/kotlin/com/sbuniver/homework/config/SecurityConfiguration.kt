@@ -24,18 +24,19 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
         http.authorizeRequests()
-            .antMatchers("/login").permitAll()
-            .antMatchers("/h2/*").permitAll()
-            .antMatchers("/h2").permitAll()
-            .antMatchers("/app/*").hasAnyRole("ADMIN", "USER")
+            .antMatchers("/**").hasAnyRole("ADMIN")
+//            .antMatchers("/login").permitAll()
+//            .antMatchers("/h2/*").permitAll()
+//            .antMatchers("/h2").permitAll()
             .antMatchers("/api/*/delete").hasAnyRole("ADMIN")
-            .antMatchers("/api/*").hasAnyRole("ADMIN", "APIUSER")
-            .antMatchers("/**").denyAll()
+            .antMatchers("/app/**").hasAnyRole("USER")
+            .antMatchers("/api/**").hasAnyRole("APIUSER")
+//            .antMatchers("/**").denyAll()
             .and().formLogin()
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.jdbcAuthentication().dataSource(dataSource)
+        auth.authenticationProvider(authProvider())
     }
 
     @Bean
