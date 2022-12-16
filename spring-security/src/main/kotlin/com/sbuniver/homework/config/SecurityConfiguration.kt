@@ -31,7 +31,6 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
             .antMatchers("/api/*/delete").hasAnyRole("ADMIN")
             .antMatchers("/app/**").hasAnyRole("USER")
             .antMatchers("/api/**").hasAnyRole("APIUSER")
-//            .antMatchers("/**").denyAll()
             .and().formLogin()
     }
 
