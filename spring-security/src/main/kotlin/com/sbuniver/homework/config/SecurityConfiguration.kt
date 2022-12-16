@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
-import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import javax.sql.DataSource
 
@@ -24,14 +23,14 @@ class SecurityConfiguration : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
         http.authorizeRequests()
-            .antMatchers("/**").hasAnyRole("ADMIN")
-//            .antMatchers("/login").permitAll()
-//            .antMatchers("/h2/*").permitAll()
-//            .antMatchers("/h2").permitAll()
-            .antMatchers("/api/*/delete").hasAnyRole("ADMIN")
-            .antMatchers("/app/**").hasAnyRole("USER")
-            .antMatchers("/api/**").hasAnyRole("APIUSER")
+            .antMatchers("/h2*").hasRole("ADMIN")
+            .antMatchers("/app/**").hasAnyRole("USER","ADMIN")
+            .antMatchers("/api/**").hasAnyRole("APIUSER","ADMIN")
+            .antMatchers("/**").hasRole("ADMIN")
             .and().formLogin()
+
+        http.csrf().disable()
+        http.headers().frameOptions().disable()
     }
 
     override fun configure(auth: AuthenticationManagerBuilder) {

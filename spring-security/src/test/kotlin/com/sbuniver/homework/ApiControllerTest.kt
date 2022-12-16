@@ -8,7 +8,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
+import org.springframework.util.LinkedMultiValueMap
 import org.springframework.web.client.RestTemplate
 import java.net.URI
 
@@ -26,25 +28,60 @@ internal class ApiControllerTest {
     val addressBook = AddressBook()
 
     @BeforeEach
-    fun prepare(){
+    fun prepare() {
         apiUrl = "http://localhost:$port/api"
     }
 
+    fun createHeaders(username: String, password: String): HttpHeaders? {
+        val credentials = LinkedMultiValueMap<String, String>().apply {
+            this.add("username", username)
+            this.add("password", password)
+        }
+
+        val loginResponse = restTemplate.postForEntity(
+            "http://localhost:$port/login",
+            HttpEntity(credentials, HttpHeaders()),
+            String::class.java
+        )
+
+        val authCookie = loginResponse.headers["Set-Cookie"]?.get(0)
+
+        return HttpHeaders().apply {
+            this.add("Cookie", authCookie)
+        }
+    }
+
     @Test
-    fun list() {
-        val responseBody = restTemplate
-            .getForEntity(URI("$apiUrl/list"), String::class.java).body
-        assert(responseBody!!.contains("Andrey"))
+    fun `list by admin`() {
+        val responseEntity = restTemplate
+            .exchange(
+                URI("$apiUrl/list"),
+                HttpMethod.GET,
+                HttpEntity(null, createHeaders("admin", "pass")),
+                String::class.java
+            )
+        responseEntity.body?.let { assert(it.contains("Andrey")) }
+    }
+
+    @Test
+    fun `list by apiuser`() {
+        val responseEntity = restTemplate
+            .exchange(
+                URI("$apiUrl/list"),
+                HttpMethod.GET,
+                HttpEntity(null, createHeaders("apiuser", "pass")),
+                String::class.java
+            )
+        responseEntity.body?.let { assert(it.contains("Andrey")) }
     }
 
     @Test
     fun add() {
-        val dto = AddressDto(999,"Newman","NY","NewStreet",9)
-        val entity = HttpEntity(dto)
+        val dto = AddressDto(999, "Newman", "NY", "NewStreet", 9)
         val responseEntity = restTemplate.exchange(
             URI("$apiUrl/add"),
             HttpMethod.POST,
-            entity,
+            HttpEntity(dto, createHeaders("apiuser", "pass")),
             Boolean::class.java
         )
         assert(responseEntity.statusCode.is2xxSuccessful)
@@ -52,10 +89,10 @@ internal class ApiControllerTest {
 
     @Test
     fun getById() {
-      val dto = restTemplate.exchange(
+        val dto = restTemplate.exchange(
             URI("$apiUrl/1/view"),
             HttpMethod.GET,
-            HttpEntity.EMPTY,
+            HttpEntity(null, createHeaders("apiuser", "pass")),
             AddressDto::class.java
         ).body
         assert(dto!! == addressBook.get(1))
@@ -63,12 +100,11 @@ internal class ApiControllerTest {
 
     @Test
     fun editById() {
-        val dto = AddressDto(2,"Newman","NY","NewStreet",9)
-        val entity = HttpEntity(dto)
+        val dto = AddressDto(2, "Newman", "NY", "NewStreet", 9)
         val responseEntity = restTemplate.exchange(
             URI("$apiUrl/edit"),
             HttpMethod.PUT,
-            entity,
+            HttpEntity(dto, createHeaders("apiuser", "pass")),
             AddressDto::class.java
         )
         assert(responseEntity.statusCode.is2xxSuccessful)
@@ -79,7 +115,7 @@ internal class ApiControllerTest {
         val responseEntity = restTemplate.exchange(
             URI("$apiUrl/1/delete"),
             HttpMethod.DELETE,
-            HttpEntity.EMPTY,
+            HttpEntity(null, createHeaders("apiuser", "pass")),
             Any::class.java
         )
         assert(responseEntity.statusCode.is2xxSuccessful)

@@ -20,7 +20,7 @@ class AppControllerTest {
     @Autowired
     private lateinit var mock: MockMvc
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(value = "admin", password = "admin", roles = ["ADMIN"])
     @Test
     fun getAllAddressesTest() {
         mock.perform(MockMvcRequestBuilders.get("/app/list"))
@@ -28,6 +28,14 @@ class AppControllerTest {
             .andExpect(MockMvcResultMatchers.content().string(StringContains("Andrey")))
     }
 
+    @WithMockUser(value = "apiuser", password = "apiuser", roles = ["APIUSER"])
+    @Test
+    fun `getAllAddresses forbidden for APIUSER`() {
+        mock.perform(MockMvcRequestBuilders.get("/app/list"))
+            .andExpect(status().is4xxClientError)
+    }
+
+    @WithMockUser(value = "user", password = "user", roles = ["USER"])
     @Test
     fun getOneAddressTest() {
         mock.perform(MockMvcRequestBuilders.get("/app/2/view"))
@@ -37,6 +45,7 @@ class AppControllerTest {
             .andExpect(MockMvcResultMatchers.content().string(StringContains("Sochi")))
     }
 
+    @WithMockUser(value = "user", password = "user", roles = ["USER"])
     @Test
     fun addAddressTest() {
         mock
@@ -48,7 +57,6 @@ class AppControllerTest {
                     .param("city", "New York")
                     .param("street", "New Street")
                     .param("home", "100")
-
             )
             .andDo(MockMvcResultHandlers.print())
             .andExpect(status().is3xxRedirection)
@@ -60,6 +68,7 @@ class AppControllerTest {
             .andExpect(MockMvcResultMatchers.content().string(StringContains("New Street")))
     }
 
+    @WithMockUser(value = "user", password = "user", roles = ["USER"])
     @Test
     fun deleteAddressTest() {
         mock.perform(MockMvcRequestBuilders.get("/app/list"))
@@ -75,6 +84,7 @@ class AppControllerTest {
             .andExpect(MockMvcResultMatchers.content().string(not(StringContains("Sergey"))))
     }
 
+    @WithMockUser(value = "user", password = "user", roles = ["USER"])
     @Test
     fun editAddressTest() {
         mock.perform(
