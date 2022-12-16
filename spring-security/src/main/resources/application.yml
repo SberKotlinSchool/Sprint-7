@@ -1,0 +1,21 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:h2db
+    username: sa
+    password: sa
+    driverClassName: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    defer-datasource-initialization: true
+    generate-ddl: true
+    hibernate.ddl-auto: create
+  sql.init.mode: always
+  liquibase:
+    enabled: true
+    change-log: classpath:db/changelog-master.xml
+    database-change-log-table: lbase_log
+    database-change-log-lock-table: lbase_lock

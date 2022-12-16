@@ -1,0 +1,14 @@
+databaseChangeLog:
+  - changeSet:
+      id:  bankaccount-owner-idx
+      author:  Andrey Imshenik
+      changes:
+        - createIndex:
+            clustered:  true
+            columns:
+              - column:
+                  name:  owner
+            indexName:  bankaccount-owner-idx
+            schemaName:  public
+            tableName:  bankaccount
+            unique:  true

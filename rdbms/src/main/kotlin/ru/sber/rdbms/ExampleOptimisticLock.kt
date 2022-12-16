@@ -1,5 +1,8 @@
 package ru.sber.rdbms
 
+import ru.sber.rdbms.Constants.Companion.URL
+import ru.sber.rdbms.Constants.Companion.PASSWORD
+import ru.sber.rdbms.Constants.Companion.USERNAME
 import java.sql.DriverManager
 import java.sql.SQLException
 
@@ -13,9 +16,9 @@ version int
  */
 fun main() {
     val connection = DriverManager.getConnection(
-        "jdbc:postgresql://localhost:5432/db",
-        "postgres",
-        "postgres"
+        URL,
+        USERNAME,
+        PASSWORD
     )
     connection.use { conn ->
         val autoCommit = conn.autoCommit
@@ -29,7 +32,8 @@ fun main() {
                     version = it.getInt("version")
                 }
             }
-            val prepareStatement2 = conn.prepareStatement("update account1 set amount = amount - 100, version = version + 1 where id = 1 and version = ?")
+            val prepareStatement2 =
+                conn.prepareStatement("update account1 set amount = amount - 100, version = version + 1 where id = 1 and version = ?")
             prepareStatement2.use { statement ->
                 statement.setInt(1, version)
                 val updatedRows = statement.executeUpdate()
