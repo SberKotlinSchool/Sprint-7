@@ -1,5 +1,8 @@
 databaseChangeLog:
   - include:
       file: init.sql
-
+  - include:
+      file: add-index.sql
+  - include:
+      file: generate-data.sql
 
