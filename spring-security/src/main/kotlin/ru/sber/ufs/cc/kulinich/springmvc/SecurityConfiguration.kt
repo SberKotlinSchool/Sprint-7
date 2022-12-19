@@ -38,7 +38,7 @@ class SecurityConfiguration(
         http
             .csrf().disable()
             .authorizeRequests()
-            .antMatchers("/app/**").hasAnyRole("ADMIN", "APP")
+            .antMatchers("/app/**").hasAnyRole("ADMIN", "USER")
             .antMatchers("/api/**").hasAnyRole("ADMIN", "API")
             .antMatchers("/**").hasAnyRole("ADMIN", "USER")
             .anyRequest().authenticated()

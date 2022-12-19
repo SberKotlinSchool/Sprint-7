@@ -5,20 +5,25 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.springframework.http.HttpEntity
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.test.web.server.LocalServerPort
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
-import org.springframework.http.HttpStatus
+import org.springframework.http.*
+import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.test.annotation.DirtiesContext
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import ru.sber.ufs.cc.kulinich.springmvc.models.AddressBookModel
 import java.time.LocalDate
 import javax.servlet.http.Cookie
 
+@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class SpringRESTApplicationTests {
 
     @LocalServerPort
@@ -29,129 +34,60 @@ class SpringRESTApplicationTests {
         Cookie("auth", "${LocalDate.now()}")
 
 
-    @Autowired
-    private lateinit var restTemplate: TestRestTemplate
 
+    @Autowired
+    lateinit var mockMvc: MockMvc
 
     private fun url(path: String): String {
         return "http://localhost:${port}/${path}"
     }
 
+    val testData = """{"name" : "roman", "phone" : "89151111111"}"""
 
     @BeforeEach
-    private fun addTest(){
-        //given
-        restTemplate.postForEntity(
-            url("/api/add"),
-            HttpEntity(
-                AddressBookModel(name = "Roman", phone = "89151112233"),
-                HttpHeaders().apply { this.add("Cookie", "auth=${LocalDate.now()}") }
-            ),
-            AddressBookModel::class.java)
-            .apply {
-                assertNotNull(this)
-                assertNotNull(this.body)
-                assertEquals(HttpStatus.OK, this.statusCode)
-            }
-    }
-
-
-    @Test
-    fun getListTest() {
-        //when
-        val actualResponse = restTemplate.exchange(
-            url("/api/list"),
-            HttpMethod.GET,
-            HttpEntity(
-                null,
-                HttpHeaders()
-                    .apply { this.add("Cookie", "auth=${LocalDate.now()}") }),
-            Array<AddressBookModel>::class.java
+    fun setUp() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/api/add")
+                .content(testData)
+                .contentType(MediaType.APPLICATION_JSON)
         )
+    }
 
-        //then
-        assertNotNull(actualResponse)
-        assertNotNull(actualResponse.body)
-        assertEquals(HttpStatus.OK, actualResponse.statusCode)
-        assertEquals(actualResponse.body!!.first().name, "Roman")
-        assertEquals(actualResponse.body!!.first().phone, "89151112233")
+
+
+    @Test
+    @WithMockUser(username = "user", password = "user", roles = ["API"])
+    fun addClient() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.post("/api/add")
+                .content(testData)
+                .contentType(MediaType.APPLICATION_JSON)
+        )   .andExpect(jsonPath("$.phone").value("89151111111"))
+            .andExpect(jsonPath("$.name").value("roman"))
+            .andExpect(MockMvcResultMatchers.status().isOk)
     }
 
 
     @Test
-    fun viewTest() {
-        //when
-        val actualResponse =
-            restTemplate.exchange(
-                url("/api/${"89151112233".hashCode()}/view"),
-                HttpMethod.GET,
-                HttpEntity(null,
-                    HttpHeaders()
-                        .apply { this.add("Cookie", "auth=${LocalDate.now()}") }),
-                AddressBookModel::class.java
-            )
-
-        //then
-        assertNotNull(actualResponse)
-        assertNotNull(actualResponse.body)
-        assertEquals(HttpStatus.OK, actualResponse.statusCode)
-        assertEquals("Roman", actualResponse.body!!.name)
-    }
-
-
-    @Test
-    fun editTest() {
-        // when
-        val editResponse = restTemplate.exchange(
-            url("api/${"89151112233".hashCode()}/edit"),
-            HttpMethod.POST,
-            HttpEntity(
-                AddressBookModel(name = "Gustav", phone = "89151112233"),
-                HttpHeaders().apply { this.add("Cookie", "auth=${LocalDate.now()}") }),
-            String::class.java
+    @WithMockUser(username = "user", password = "user", roles = ["API"])
+    fun getAllClients() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.get(url("api/list"))
+                .contentType(MediaType.APPLICATION_JSON)
         )
-
-        // then
-        val editChechResponse =
-            restTemplate.exchange(
-                url("/api/list"),
-                HttpMethod.GET,
-                HttpEntity(null,
-                    HttpHeaders().apply { this.add("Cookie", "auth=${LocalDate.now()}") }),
-                Array<AddressBookModel>::class.java
-            )
-        assertEquals(HttpStatus.OK, editChechResponse.statusCode)
-        assertNotNull(editChechResponse)
-        assertNotNull(editChechResponse.body)
-        assertEquals(editChechResponse.body!!.first().name, "Gustav")
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$[0].phone").value("89151111111"))
+            .andExpect(jsonPath("$[0].name").value("roman"))
     }
 
 
     @Test
-    fun deleteTest() {
-        // when
-        val deleteResponse = restTemplate.exchange(
-            url("/api/${"89151112233".hashCode()}/delete"),
-            HttpMethod.POST,
-            HttpEntity(
-                null,
-                HttpHeaders().apply { this.add("Cookie", "auth=${LocalDate.now()}") }),
-            String::class.java
+    @WithMockUser(username = "gustav", password = "user", roles = ["API"])
+    fun deleteClientWithoutRight() {
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete("/api/1334912332/delete")
         )
-
-        // then
-        assertEquals(HttpStatus.OK, deleteResponse.statusCode)
-        val editChechResponse =
-            restTemplate.exchange(
-                url("/api/list"),
-                HttpMethod.GET,
-                HttpEntity(null,
-                    HttpHeaders().apply { this.add("Cookie", "auth=${LocalDate.now()}") }),
-                Array<AddressBookModel>::class.java
-            )
-        assertEquals(HttpStatus.OK, editChechResponse.statusCode)
-        assertNotNull(editChechResponse)
-        assertNotNull(editChechResponse.body)
-        assert(editChechResponse.body!!.isEmpty())
+            .andExpect(status().isMethodNotAllowed)
     }
+
 }

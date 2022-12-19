@@ -56,17 +56,9 @@ class SpringMvcApplicationTests {
             .andExpect(view().name("redirect:/app/list"))
     }
 
-    @Test
-    @WithMockUser(username = "admin", password = "user", roles = ["ADMIN"])
-    fun `add contacts fail due to not logged in`() {
-        mockMvc.perform(post("/app/add")
-            .param("name", "Gustav")
-            .param("phone", "89151371112"))
-            .andExpect(status().is3xxRedirection)
-            .andExpect(redirectedUrl("/login"))
-    }
 
     @Test
+    @WithMockUser(username = "admin", password = "user", roles = ["ADMIN"])
     fun goToListTest() {
         mockMvc.perform(get("/app/list")
                 .cookie(getAuthCookie()))

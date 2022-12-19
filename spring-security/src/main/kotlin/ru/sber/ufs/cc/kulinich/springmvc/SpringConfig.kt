@@ -9,8 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 @Configuration
 @ComponentScan("ru.sber.ufs.cc.kulinich.springmvc")
-@ServletComponentScan("ru.sber.ufs.cc.kulinich.springmvc.servlets",
-    "ru.sber.ufs.cc.kulinich.springmvc.filters")
+@ServletComponentScan("ru.sber.ufs.cc.kulinich.springmvc.filters")
 class SpringConfig : WebMvcConfigurer  {
 
 }

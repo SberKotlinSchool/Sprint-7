@@ -35,10 +35,8 @@ CREATE TABLE IF NOT EXISTS users_roles
 (
     user_id bigint NOT NULL,
     roles_id bigint NOT NULL,
-    CONSTRAINT C_USER_ROLE FOREIGN KEY (roles_id)
-    REFERENCES role (id) MATCH SIMPLE
-    CONSTRAINT C_ROLE_USER FOREIGN KEY (user_id)
-    REFERENCES users (id) MATCH SIMPLE
+     FOREIGN KEY (roles_id)  REFERENCES role (id) ,
+    FOREIGN KEY (user_id) REFERENCES users (id)
     );
 
 insert into users_roles (user_id, roles_id) values
