@@ -51,7 +51,11 @@
             <version>1.12.0</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.1.214</version>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
@@ -104,10 +108,12 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>4.5.0</version>
                 <configuration>
-                    <changeLogFile>db.changelog-master.yaml</changeLogFile>
-                    <url>jdbc:postgresql://localhost:5432/db</url>
+<!--                    <changeLogFile>db.changelog-master.yaml</changeLogFile>-->
+                    <changeLogFile>${project.basedir}/src/main/resources/db.changelog-master.yaml</changeLogFile>
+                    <changeLogDirectory>${project.basedir}/src/main/resources/</changeLogDirectory>
+                    <url>jdbc:postgresql://localhost:5432/postgres</url>
                     <username>postgres</username>
-                    <password>postgres</password>
+                    <password>s3cr3t</password>
                 </configuration>
             </plugin>
         </plugins>

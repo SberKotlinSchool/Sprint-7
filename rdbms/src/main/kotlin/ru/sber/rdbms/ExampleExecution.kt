@@ -4,9 +4,9 @@ import java.sql.DriverManager
 
 fun main() {
     val connection = DriverManager.getConnection(
-        "jdbc:postgresql://localhost:5432/db",
+        "jdbc:postgresql://localhost:5432/postgres",
         "postgres",
-        "postgres"
+        "s3cr3t"
     )
     connection.use { conn ->
         val prepareStatement = conn.prepareStatement("select 1")
