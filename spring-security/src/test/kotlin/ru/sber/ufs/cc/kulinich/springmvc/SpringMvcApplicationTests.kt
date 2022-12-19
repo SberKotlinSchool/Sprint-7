@@ -16,7 +16,7 @@ import java.time.LocalDate
 import javax.servlet.http.Cookie
 
 @AutoConfigureMockMvc
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SpringMvcApplicationTests {
     @LocalServerPort
     private var port: Int = 8080
