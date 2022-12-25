@@ -1,6 +1,6 @@
-package com.example.demo.dao
+package ru.sber.orm.dao
 
-import com.example.demo.entity.Patient
+import ru.sber.orm.entity.Patient
 import org.hibernate.SessionFactory
 
 class PatientDao (

@@ -1,4 +1,4 @@
-package com.example.demo
+package ru.sber.orm
 
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

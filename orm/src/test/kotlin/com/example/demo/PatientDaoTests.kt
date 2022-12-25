@@ -1,9 +1,9 @@
 package com.example.demo
 
-import com.example.demo.dao.PatientDao
-import com.example.demo.entity.Hospital
-import com.example.demo.entity.OutpatientBook
-import com.example.demo.entity.Patient
+import ru.sber.orm.dao.PatientDao
+import ru.sber.orm.entity.Hospital
+import ru.sber.orm.entity.OutpatientBook
+import ru.sber.orm.entity.Patient
 import jdk.nashorn.internal.objects.NativeRegExp.test
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertNotNull

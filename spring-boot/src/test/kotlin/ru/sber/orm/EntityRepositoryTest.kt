@@ -1,7 +1,7 @@
-package com.example.demo
+package ru.sber.orm
 
-import com.example.demo.persistance.Entity
-import com.example.demo.persistance.EntityRepository
+import ru.sber.orm.persistance.Entity
+import ru.sber.orm.persistance.EntityRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired

@@ -1,4 +1,4 @@
-package com.example.demo.entity
+package ru.sber.orm.entity
 
 import javax.persistence.*
 
@@ -21,7 +21,7 @@ class Patient(
     @OneToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
     var hospitals: MutableList<Hospital>,
 
-) {
+    ) {
     override fun toString(): String {
         return "Patient(id=$id, lastName='$lastName', firstName='$firstName', outpatientBook=$outpatientBook', hospital=$hospitals)"
     }

@@ -1,4 +1,4 @@
-package com.example.demo.persistance
+package ru.sber.orm.persistance
 
 import javax.persistence.Id
 import javax.persistence.Column

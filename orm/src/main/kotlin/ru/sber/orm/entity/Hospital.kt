@@ -1,4 +1,4 @@
-package com.example.demo.entity
+package ru.sber.orm.entity
 
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue

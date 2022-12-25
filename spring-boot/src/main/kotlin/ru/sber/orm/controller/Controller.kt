@@ -1,4 +1,4 @@
-package com.example.demo.controller
+package ru.sber.orm.controller
 
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController

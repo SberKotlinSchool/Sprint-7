@@ -1,4 +1,4 @@
-package com.example.demo.entity
+package ru.sber.orm.entity
 
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
