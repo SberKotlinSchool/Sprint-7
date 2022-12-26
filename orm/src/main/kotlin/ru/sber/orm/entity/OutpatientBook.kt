@@ -13,7 +13,7 @@ class OutpatientBook (
     @GeneratedValue
     var id: Long = 0,
     @CreationTimestamp
-    var hospitalization: LocalDateTime ,
+    var hospitalization: LocalDateTime,
     @UpdateTimestamp
     var discharge: LocalDateTime
 ) {

@@ -1,16 +1,14 @@
-package com.example.demo
+package ru.sber.orm
 
+import org.hibernate.SessionFactory
+import org.hibernate.cfg.Configuration
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.Test
 import ru.sber.orm.dao.PatientDao
 import ru.sber.orm.entity.Hospital
 import ru.sber.orm.entity.OutpatientBook
 import ru.sber.orm.entity.Patient
-import jdk.nashorn.internal.objects.NativeRegExp.test
-import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertNotNull
-import org.hibernate.SessionFactory
-import org.junit.jupiter.api.Test
-import org.hibernate.cfg.Configuration
-import org.springframework.boot.test.context.SpringBootTest
 import java.time.LocalDateTime
 
 class PatientDaoTests {
