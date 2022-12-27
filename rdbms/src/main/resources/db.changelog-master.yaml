@@ -1,5 +1,7 @@
 databaseChangeLog:
   - include:
-      file: init.sql
+      file: new_init.sql
+  - include:
+      file: new_index.sql
 
 
