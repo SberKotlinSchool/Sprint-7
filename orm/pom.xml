@@ -11,7 +11,7 @@
 	<properties>
 		<maven.compiler.source>8</maven.compiler.source>
 		<maven.compiler.target>8</maven.compiler.target>
-		<kotlin.version>1.6.21</kotlin.version>
+		<kotlin.version>1.7.22</kotlin.version>
 		<junit.jupiter.version>5.9.0</junit.jupiter.version>
 	</properties>
 
