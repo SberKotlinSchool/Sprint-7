@@ -31,9 +31,9 @@ internal class SpringDataApplicationTest {
 
             assertEquals(saved.id, foundModel.get().id)
 
-            val allModels = modelRepository.findAll()
+            val allModels = modelRepository.findAll() as List<Model>
 
-//            assertEquals(1, allModels.size)
+            assertEquals(1, allModels.size)
         }
     }
 
