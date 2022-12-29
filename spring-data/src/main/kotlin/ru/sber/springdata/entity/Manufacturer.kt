@@ -1,6 +1,5 @@
 package ru.sber.springdata.entity
 
-import org.hibernate.annotations.NaturalId
 import javax.persistence.*
 
 @Entity
@@ -10,9 +9,6 @@ class Manufacturer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0
 
-    @NaturalId
+    @Column
     var name: String? = null
-
-    @OneToMany
-    val modelList: List<Model> = ArrayList()
 }
