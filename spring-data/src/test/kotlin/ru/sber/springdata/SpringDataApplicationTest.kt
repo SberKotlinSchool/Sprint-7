@@ -1,6 +1,7 @@
 package ru.sber.springdata
 
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -14,11 +15,16 @@ internal class SpringDataApplicationTest {
     @Autowired
     lateinit var modelRepository: ModelRepository
 
-    val newModel = Model().also { model ->
-        model.name = "Chaser"
-        model.type = VehicleType.CAR
-        model.manufacturer = Manufacturer().also {
-            it.name = "Toyota"
+    lateinit var newModel: Model
+
+    @BeforeEach
+    fun init() {
+        newModel = Model().also { model ->
+            model.name = "Chaser"
+            model.type = VehicleType.CAR
+            model.manufacturer = Manufacturer().also {
+                it.name = "Toyota"
+            }
         }
     }
 

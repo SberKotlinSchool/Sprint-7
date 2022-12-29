@@ -1,6 +1,5 @@
 package ru.sber.springdata.entity
 
-import org.hibernate.annotations.NaturalId
 import ru.sber.springdata.VehicleType
 import javax.persistence.*
 
@@ -11,7 +10,7 @@ class Model {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
 
-    @NaturalId
+    @Column
     var name: String? = null
 
     @ManyToOne(cascade = [CascadeType.ALL])
