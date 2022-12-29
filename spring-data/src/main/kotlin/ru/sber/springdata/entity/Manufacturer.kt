@@ -13,6 +13,6 @@ class Manufacturer {
     @NaturalId
     var name: String? = null
 
-    @OneToMany
+    @OneToMany(cascade = [CascadeType.ALL])
     val modelList: List<Model> = ArrayList()
 }
