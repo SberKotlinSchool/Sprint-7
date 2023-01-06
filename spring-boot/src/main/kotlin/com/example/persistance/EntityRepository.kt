@@ -1,4 +1,4 @@
-package ru.sber.orm.persistance
+package com.example.persistance
 
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository

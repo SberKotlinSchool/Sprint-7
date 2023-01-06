@@ -1,7 +1,7 @@
-package ru.sber.orm
+package com.example
 
-import ru.sber.orm.persistance.Entity
-import ru.sber.orm.persistance.EntityRepository
+import com.example.persistance.Entity
+import com.example.persistance.EntityRepository
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -16,7 +16,7 @@ class EntityRepositoryTest {
     @Test
     fun findById(){
         val savedEntity = entityRepository.save(Entity(name = "Anonym"))
-        val foundEntity = entityRepository.findById(savedEntity.id!!).get()
+        val foundEntity = entityRepository.findById(savedEntity.id).get()
 
         assertEquals(savedEntity, foundEntity)
     }

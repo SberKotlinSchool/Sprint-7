@@ -1,9 +1,9 @@
-package ru.sber.orm.persistance
+package com.example.persistance
 
-import javax.persistence.Id
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue
+import javax.persistence.Id
 
 
 @Entity
