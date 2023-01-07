@@ -3,17 +3,14 @@ package ru.sber.springsecurity.entities
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 import kotlin.streams.toList
 
 @Entity
 @Table(name = "Users")
 data class User(
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     val id: Long = 0L,
     val name: String = "",
     val password: String = "",

@@ -1,4 +1,4 @@
-package ru.sber.springsecurity
+package ru.sber.springsecurity.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.security.authentication.AuthenticationProvider
@@ -21,7 +21,8 @@ class SecurityConfig {
         http {
             authorizeRequests {
                 authorize("/app/**", authenticated)
-                authorize("/api/**", "hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_API')")
+                authorize("/message/**", authenticated)
+                authorize("/api/**", "hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
             }
             formLogin {
                 permitAll()

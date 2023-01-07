@@ -14,7 +14,10 @@ class NoteService @Autowired constructor(val noteRepository: NoteRepository) {
 
     fun findNoteById(id: Long): Note? = noteRepository.findById(id).orElse(null)
 
-    fun saveNote(note: Note) = noteRepository.save(note)
+    fun saveNote(note: Note) {
+        note.postDate = LocalDateTime.now().format(DateTimeFormatter.ofPattern(RequestUtils.DAY_MONTH_HMS))
+        noteRepository.save(note)
+    }
 
     fun deleteNoteById(id: Long) = noteRepository.deleteById(id)
 

@@ -4,17 +4,14 @@ import ru.sber.springsecurity.utils.RequestUtils.Companion.DAY_MONTH_HMS
 import ru.sber.springsecurity.utils.RequestUtils.Companion.notes
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import javax.persistence.Entity
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.Table
+import javax.persistence.*
 
 @Entity
 @Table(name = "Notes")
 class Note {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy= GenerationType.IDENTITY)
     val id: Long = 0
 
     var author: String = ""
