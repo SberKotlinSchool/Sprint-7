@@ -21,16 +21,8 @@ class RestApplicationTest {
     }
 
     @Test
-    fun testAuthorSuccess() {
-        var resp = restTemplate.getForObject(url("/api/message/author?name=admin"), String::class.java)
-        assertTrue(resp.contains("Hello"))
-        resp = restTemplate.getForObject<String>(url("/api/message/author?name=user"), String::class.java)
-        assertTrue(resp.contains("Hello"))
-    }
-
-    @Test
-    fun testAuthorFail() {
+    fun testSecurityForm() {
         var resp = restTemplate.getForObject(url("/api/message/author?name=noname"), String::class.java)
-        assertTrue(resp.contains("[]"))
+        assertTrue(resp.contains("<input type=\"password\" id=\"password\" name=\"password\" class=\"form-control\" placeholder=\"Password\" required>"))
     }
 }
