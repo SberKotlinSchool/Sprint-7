@@ -32,7 +32,7 @@ class TransferConstraint {
                     println("Transfer $amount from account $accountId1 to account $accountId2 successfully completed.")
                 }
 
-            } catch (exception: SQLException) {
+            } catch (exception: Exception) {
                 println(exception.message)
                 conn.rollback()
             }

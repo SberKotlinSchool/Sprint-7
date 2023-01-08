@@ -69,7 +69,7 @@ class TransferPessimisticLock {
 
                 println("Transfer $amount from account $accountId1 to account $accountId2 successfully completed.")
 
-            } catch (exception: SQLException) {
+            } catch (exception: Exception) {
                 println(exception)
                 conn.rollback()
             }
