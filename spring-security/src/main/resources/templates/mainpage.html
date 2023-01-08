@@ -37,28 +37,24 @@
 <body>
 <h1 color = "#B0E0E6" th:text="${login} + '`s' + '  Notebook'" />
 <hr>
-<div  class="form-inline" th:each="note, iStat : ${notes}">
-<!--    <input th:value="${note}">-->
+<div class="form-inline" th:each="note : ${notes}">
     <form method="post" th:action="@{/note/edit}">
         <input type="hidden" name="login" th:value="${login}">
-        <input type="hidden" name="pass" th:value="''">
-        <input type="hidden" name="id" th:value="${iStat.index}">
-        <input name="note" th:value="${note}">
+        <input type="hidden" name="id" th:value="${note.id}">
+        <input name="note" th:value="${note.text}">
         <button>Edit</button>
     </form>
     <form method="post" th:action="@{/note/delete}">
         <input type="hidden" name="login" th:value="${login}">
-        <input type="hidden" name="pass" th:value="''">
-        <input type="hidden" name="id" th:value="${iStat.index}">
+        <input type="hidden" name="id" th:value="${note.id}">
         <button>Delete</button>
     </form>
     <hr class="noteline">
 </div>
 <div class="btn-group">
     <form method="post" th:action="@{/note/new}" >
-        <input name="note" placeholder="Введите заметку" >
+        <input name="text" placeholder="Введите заметку" >
         <input type="hidden" name="login" th:value="${login}">
-        <input type="hidden" name="pass" th:value="''">
         <button>Add</button>
     </form>
 </div>

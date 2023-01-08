@@ -1,4 +1,4 @@
-package com.example.notebook.filters
+package com.example.springsecurity.filters
 
 
 import javax.servlet.Filter
