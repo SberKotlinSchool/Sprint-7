@@ -7,9 +7,18 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/api")
-class ClientController(@Autowired val service : ClientService) {
+class ClientController() {
+
+    lateinit var service : ClientService
+        @Autowired set
+//
+//    @GetMapping("/{id}/phone")
+//    fun getPhoneNumber(@PathVariable id: Long) = ResponseEntity.ok(service.getPhoneNumberById(id))
+
 
     @GetMapping("/{id}/phone")
-    fun getPhoneNumber(@PathVariable id: Long) = ResponseEntity.ok(service.getPhoneNumberById(id))
+    fun getPhoneNumber(@PathVariable id: Long): ResponseEntity<String> {
+        return ResponseEntity.ok(service.getPhoneNumberById(id))
+    }
 
 }

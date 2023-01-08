@@ -16,7 +16,6 @@
     <properties>
         <java.version>1.8</java.version>
         <kotlin.version>1.6.21</kotlin.version>
-        <mockk.version>1.12.0</mockk.version>
     </properties>
     <dependencies>
         <dependency>
@@ -44,19 +43,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
              <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>io.mockk</groupId>
-            <artifactId>mockk</artifactId>
-            <version>${mockk.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-runner -->
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-runner</artifactId>
-            <version>1.9.1</version>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 
     <build>
