@@ -1,7 +1,22 @@
 package ru.sber.rdbms
 
-class TransferPessimisticLock {
-    fun transfer(accountId1: Long, accountId2: Long, amount: Long) {
-        TODO()
+import java.sql.SQLException
+
+class TransferPessimisticLock(private val connectionManager : ConnectionManager)  {
+
+    fun transfer(sourceAccountId: Long, targetAccountId: Long, amount: Int) {
+        val conn = connectionManager.getConnection()
+        val autoCommit = conn.autoCommit
+        try {
+            conn.autoCommit = false
+            checkBalanceInTransaction(sourceAccountId, conn, true)
+            transferInTransaction(sourceAccountId, targetAccountId, amount, conn)
+            conn.commit()
+        } catch (exception: SQLException) {
+            println(exception.message)
+            conn.rollback()
+        } finally {
+            conn.autoCommit = autoCommit
+        }
     }
 }

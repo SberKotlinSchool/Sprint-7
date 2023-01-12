@@ -1,7 +1,25 @@
 package ru.sber.rdbms
 
-class TransferOptimisticLock {
-    fun transfer(accountId1: Long, accountId2: Long, amount: Long) {
-        TODO()
+import java.sql.SQLException
+
+class TransferOptimisticLock(private val connectionManager : ConnectionManager) {
+
+    fun transfer(sourceAccountId: Long, targetAccountId: Long, amount: Int) {
+        val conn = connectionManager.getConnection()
+        val autoCommit = conn.autoCommit
+        try {
+            conn.autoCommit = false
+            checkBalanceInTransaction(sourceAccountId, conn, false)
+            val updatedRowsQnt = transferOptimisticBlockingInTransaction(sourceAccountId, targetAccountId, amount, conn)
+            if (updatedRowsQnt != 1) {
+                throw SQLException("Данные были изменены другой транзакцией!")
+            }
+            conn.commit()
+        } catch (exception: SQLException) {
+            println(exception.message)
+            conn.rollback()
+        } finally {
+            conn.autoCommit = autoCommit
+        }
     }
 }
