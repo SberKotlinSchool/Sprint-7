@@ -10,12 +10,12 @@ fun main() {
     )
 
 //    TransferConstraint(connection).transfer(1, 2, 300)
- //   TransferConstraint(connection).transfer(1, 2, 50)
+    TransferConstraint(connection).transfer(1, 2, 50)
 //
 //    TransferOptimisticLock(connection).transfer(1, 2, 300)
 //    TransferOptimisticLock(connection).transfer(1, 2, 100)
 //
-    TransferPessimisticLock(connection).transfer(1, 2, 300)
+//    TransferPessimisticLock(connection).transfer(1, 2, 300)
 //    TransferPessimisticLock(connection).transfer(1, 2, 150)
 }
 
