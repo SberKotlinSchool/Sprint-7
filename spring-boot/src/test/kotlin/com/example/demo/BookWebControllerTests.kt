@@ -15,9 +15,6 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 
 @WebMvcTest(BookController::class)
 class BookWebControllerTests {
-
-    @MockBean
-    private lateinit var bookRepository: BookRepository
     @Autowired
     private lateinit var mockMvc: MockMvc
 

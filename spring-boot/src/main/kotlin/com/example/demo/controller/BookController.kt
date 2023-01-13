@@ -8,12 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class BookController constructor(val bookRepository: BookRepository) {
-    @GetMapping("/list")
-    fun getBookById(id: Long): ResponseEntity<BookEntity> {
-        return ResponseEntity.ok(bookRepository.getById(id))
-    }
-
+class BookController {
     @GetMapping("/sleep")
     fun goodNight()="Good night!"
 }
