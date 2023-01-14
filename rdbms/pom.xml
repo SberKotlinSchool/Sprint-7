@@ -105,7 +105,7 @@
                 <version>4.5.0</version>
                 <configuration>
                     <changeLogFile>src/main/resources/db.changelog-master.yaml</changeLogFile>
-                    <url>jdbc:postgresql://localhost:5432/annapopova</url>
+                    <url>jdbc:postgresql://localhost:5432/template1</url>
                     <username>postgres</username>
                     <password>postgres</password>
                 </configuration>

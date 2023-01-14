@@ -5,7 +5,7 @@
 create table accounts
 (
     id bigserial constraint account_pk primary key,
-    amount int constraint positive_amount CHECK (amount>0),
+    amount int ,--constraint positive_amount CHECK (amount>0),
     version int
 );
 

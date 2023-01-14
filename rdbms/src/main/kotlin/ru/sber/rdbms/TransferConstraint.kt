@@ -30,9 +30,3 @@ class TransferConstraint {
         }
     }
 }
-
-fun main(){
-    val tc = TransferConstraint()
-    tc.transfer(1, 2, 2)
-
-}

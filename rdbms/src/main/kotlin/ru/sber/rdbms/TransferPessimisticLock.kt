@@ -5,3 +5,8 @@ class TransferPessimisticLock {
         TODO()
     }
 }
+
+fun main() {
+    val tc = TransferPessimisticLock()
+    tc.transfer(1, 2, 100)
+}
