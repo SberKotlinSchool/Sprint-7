@@ -4,7 +4,7 @@ import javax.persistence.*
 
 @Entity
 @Table(schema = "orm", name = "order")
-data class Order (
+class Order (
     @Id
     @GeneratedValue
     var id: Long = 0,

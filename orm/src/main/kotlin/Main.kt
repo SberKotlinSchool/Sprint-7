@@ -1,5 +1,3 @@
-//import enteties.HomeAddress
-
 import entity.*
 import org.hibernate.SessionFactory
 import org.hibernate.cfg.Configuration
@@ -36,6 +34,7 @@ fun main() {
 
         orderDao.delete(sberOrder2)
 
+        println("SUCCESS!!!")
     }
 }
 
