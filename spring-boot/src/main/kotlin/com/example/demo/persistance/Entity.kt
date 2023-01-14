@@ -6,7 +6,7 @@ import javax.persistence.Id
 
 
 @javax.persistence.Entity
-data class Entity (
+class Entity (
     @Id
     @GeneratedValue
     var id: Long? = null,
