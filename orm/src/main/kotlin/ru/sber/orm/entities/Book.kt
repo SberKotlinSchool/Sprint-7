@@ -28,7 +28,4 @@ class Book(
 
     @CreationTimestamp
     var registrationDate: LocalDateTime? = null,
-
-
     )
-

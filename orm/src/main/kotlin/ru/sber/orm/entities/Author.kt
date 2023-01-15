@@ -8,9 +8,6 @@ class Author(
     @GeneratedValue
     var id: Long = 0,
     var name: String,
-
-    @OneToMany
-    var book: Book,
 )
 
 
