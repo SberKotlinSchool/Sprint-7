@@ -14,14 +14,14 @@ class Book(
     var id: Long = 0,
     var title: String,
 
-    @OneToMany(mappedBy = "book")
+    @OneToOne
+    @JoinColumn(name = "author_id", referencedColumnName = "id")
     var author: Author,
 
     @NaturalId
     @Column(name = "ISBN")
     var isbn: String,
 
-    @Column(name = "genre")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "genre_id", foreignKey = ForeignKey(name = "fk_genre_id"))
     var genre: Genre,

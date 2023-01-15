@@ -12,32 +12,61 @@ fun main() {
         .buildSessionFactory()
 
     sessionFactory.use { sessionFactory ->
-        val dao = BookDAO(sessionFactory)
+        val bookDao = BookDAO(sessionFactory)
+        val authorDap = AuthorDAO(sessionFactory)
+        val genreDao = GenreDAO(sessionFactory)
+
+        val author = Author(
+            id = 101,
+            name = "Pushkin"
+        )
+        val author2 = Author(
+            id = 102,
+            name = "Tolstoy"
+        )
+
+        authorDap.save(author)
+        authorDap.save(author2)
+
+        val genre = Genre(
+            id = 201,
+            name = "Novel"
+        )
+        val genre2 = Genre(
+            id = 202,
+            name = "Thriller"
+        )
+
+        genreDao.save(genre)
+        genreDao.save(genre2)
+
 
         val book1 = Book(
-            author = Author(1, "Pushkin"),
+            1,
+            author = author,
             title = "Captain's daughter",
             isbn = "2-266-11156-6",
-            genre = Genre(1, "Novel"),
+            genre = genre
         )
+
         val book2 = Book(
-            author = Author(2, "Tolstoy"),
+            author = author2,
             title = "Anna Karenina",
             isbn = "2-266-11156-7",
-            genre = Genre(2, "Thriller"),
+            genre = genre2
         )
 
-        dao.save(book1)
+        bookDao.save(book1)
 
-        dao.save(book2)
+        bookDao.save(book2)
 
-        var found = dao.find(book1.id)
+        var found = bookDao.find(book1.id)
         println("Найдена книга: $found \n")
 
-        found = dao.find(book2.isbn)
+        found = bookDao.find(book2.isbn)
         println("Найдена книга: $found \n")
 
-        val bookList = dao.findAll()
+        val bookList = bookDao.findAll()
         println("все книги: $bookList")
 
     }
@@ -83,5 +112,29 @@ class BookDAO(
             session.transaction.commit()
         }
         return result
+    }
+}
+
+class AuthorDAO(
+    private val sessionFactory: SessionFactory
+) {
+    fun save(author: Author) {
+        sessionFactory.openSession().use { session ->
+            session.beginTransaction()
+            session.save(author)
+            session.transaction.commit()
+        }
+    }
+}
+
+class GenreDAO(
+    private val sessionFactory: SessionFactory
+) {
+    fun save(genre: Genre) {
+        sessionFactory.openSession().use { session ->
+            session.beginTransaction()
+            session.save(genre)
+            session.transaction.commit()
+        }
     }
 }
