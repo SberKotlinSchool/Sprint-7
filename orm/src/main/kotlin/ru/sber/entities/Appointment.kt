@@ -32,6 +32,6 @@ class Appointment(
     var updatedTime: LocalDateTime? = null
 ){
     override fun toString(): String {
-        return "Appointment(id=$id, employee=$employee, post=$post, dateBegin=$dateBegin, dateEnd=$dateEnd)"
+        return "Appointment(id=$id, employee=$employee, post=$post, salary=$salary, dateBegin=$dateBegin, dateEnd=$dateEnd)"
     }
 }

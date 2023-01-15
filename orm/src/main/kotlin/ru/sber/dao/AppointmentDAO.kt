@@ -14,6 +14,22 @@ class AppointmentDAO(private val sessionFactory: SessionFactory
         }
     }
 
+    fun update(appointment: Appointment) {
+        sessionFactory.openSession().use { session ->
+            session.beginTransaction()
+            session.update(appointment)
+            session.transaction.commit()
+        }
+    }
+
+    fun delete(appointment: Appointment) {
+        sessionFactory.openSession().use { session ->
+            session.beginTransaction()
+            session.delete(appointment)
+            session.transaction.commit()
+        }
+    }
+
     fun find(id: Long): Appointment? {
         val result: Appointment?
         sessionFactory.openSession().use { session ->

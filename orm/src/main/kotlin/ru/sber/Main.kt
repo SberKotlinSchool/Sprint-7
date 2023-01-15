@@ -29,7 +29,7 @@ fun main() {
             firstName = "Иван",
             middleName = "Петрович",
             phoneNumber = "89088001111",
-            email = "ivanov2@employee.ru",
+            email = "ivanov4@employee.ru",
             birthDate = LocalDate.now().minusYears(20),
             workingMode = WorkingMode.OFFICE_MODE,
             personalData = PersonalData("1234 111111", "74839"),
@@ -39,7 +39,7 @@ fun main() {
             firstName = "Александр",
             middleName = "Иванович",
             phoneNumber = "89083333333",
-            email = "sergeev2@employee.ru",
+            email = "sergeev4@employee.ru",
             birthDate = LocalDate.now().minusYears(30),
             workingMode = WorkingMode.REMOTE_MODE,
             personalData = PersonalData("3333 123456", "10407"),
@@ -104,6 +104,13 @@ fun main() {
 
         var found = appointmentDAO.findByEmployee(employee1)
         println("Найдно назначение: $found \n")
+
+        found?.apply {
+            salary = 70000.00
+            appointmentDAO.update(this)
+            var found2 = appointmentDAO.findByEmployee(employee1)
+            println("Найдно назначение: $found2 \n")
+        }
 
         val allAppointments = appointmentDAO.findAll()
         println("Все назначения: $allAppointments")
