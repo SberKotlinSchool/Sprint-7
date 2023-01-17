@@ -1,19 +1,18 @@
-import dao.BookDAO
-import enteties.Author
-import enteties.Book
-import enteties.Library
-import org.hibernate.cfg.Configuration
+package ru.sber.springjpademo
 
-fun main() {
-    val sessionFactory = Configuration().configure()
-        .addAnnotatedClass(Book::class.java)
-        .addAnnotatedClass(Author::class.java)
-        .addAnnotatedClass(Library::class.java)
-        .buildSessionFactory()
+import org.springframework.boot.CommandLineRunner
+import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.runApplication
+import ru.sber.springjpademo.persistence.entity.Author
+import ru.sber.springjpademo.persistence.entity.Book
+import ru.sber.springjpademo.persistence.entity.Library
+import ru.sber.springjpademo.persistence.repository.BookRepository
 
-    sessionFactory.use { sessionFactory ->
-        val dao = BookDAO(sessionFactory)
-
+@SpringBootApplication
+class SpringJpaDemoApplication(
+    private val bookRepository: BookRepository
+) : CommandLineRunner {
+    override fun run(vararg args: String?) {
         val stateLib = Library(name = "State Library")
         val cityLib = Library(name = "City Library")
         val book1 = Book(
@@ -35,23 +34,25 @@ fun main() {
             libraries = mutableListOf(stateLib)
         )
 
-        dao.save(book1)
-        dao.save(book2)
-        dao.save(book3)
+        bookRepository.saveAll(listOf(book1, book2, book3))
 
-        var found = dao.find(book1.id)
+        var found = bookRepository.findById(book1.id)
         println("Найдена книга: $found \n")
 
-        found = dao.find(book2.title)
+        found = bookRepository.findByTitle(book2.title)
         println("Найдена книга: $found \n")
 
         book1.title = "${book1.title} 2"
-        var updated = dao.update(book1)
+        var updated = bookRepository.save(book1)
         println("Обновлена книга: $updated \n")
 
-        dao.delete(book2)
+        bookRepository.delete(book2)
 
-        val allBooks = dao.findAll()
+        val allBooks = bookRepository.findAll()
         println("Все книги: $allBooks")
     }
+}
+
+fun main(args: Array<String>) {
+    runApplication<SpringJpaDemoApplication>(*args)
 }
