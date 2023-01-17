@@ -10,6 +10,8 @@ import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
+import javax.persistence.JoinColumn
+import javax.persistence.JoinTable
 import javax.persistence.ManyToMany
 import javax.persistence.ManyToOne
 
@@ -23,6 +25,11 @@ class Book(
     @ManyToOne(cascade = [CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST])
     var author: Author,
     @ManyToMany(fetch = FetchType.EAGER, cascade = [CascadeType.REFRESH, CascadeType.MERGE, CascadeType.PERSIST])
+    @JoinTable(
+        name = "book_library",
+        joinColumns = [JoinColumn(name = "book_id")],
+        inverseJoinColumns = [JoinColumn(name = "library_id")]
+    )
     var libraries: MutableList<Library>,
     @CreationTimestamp
     var createdTime: LocalDateTime? = null,
