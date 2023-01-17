@@ -1,8 +1,8 @@
-package ru.sber.dao
+package ru.sber.orm.dao
 
 import org.hibernate.SessionFactory
-import ru.sber.entities.Appointment
-import ru.sber.entities.Employee
+import ru.sber.orm.entities.Appointment
+import ru.sber.orm.entities.Employee
 
 class AppointmentDAO(private val sessionFactory: SessionFactory
 ) {

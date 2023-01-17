@@ -1,14 +1,12 @@
-package ru.sber
+package ru.sber.orm
 
 import org.hibernate.cfg.Configuration
-import ru.sber.dao.AppointmentDAO
-import ru.sber.dao.DepartmentDAO
-import ru.sber.dao.EmployeeDAO
-import ru.sber.dao.PositionDAO
-import ru.sber.entities.*
+import ru.sber.orm.dao.AppointmentDAO
+import ru.sber.orm.dao.DepartmentDAO
+import ru.sber.orm.dao.EmployeeDAO
+import ru.sber.orm.dao.PositionDAO
+import ru.sber.orm.entities.*
 import java.time.LocalDate
-import javax.persistence.JoinColumn
-import javax.persistence.OneToOne
 
 fun main() {
     val sessionFactory = Configuration().configure()
@@ -29,7 +27,7 @@ fun main() {
             firstName = "Иван",
             middleName = "Петрович",
             phoneNumber = "89088001111",
-            email = "ivanov4@employee.ru",
+            email = "ivanov6@employee.ru",
             birthDate = LocalDate.now().minusYears(20),
             workingMode = WorkingMode.OFFICE_MODE,
             personalData = PersonalData("1234 111111", "74839"),
@@ -39,7 +37,7 @@ fun main() {
             firstName = "Александр",
             middleName = "Иванович",
             phoneNumber = "89083333333",
-            email = "sergeev4@employee.ru",
+            email = "sergeev6@employee.ru",
             birthDate = LocalDate.now().minusYears(30),
             workingMode = WorkingMode.REMOTE_MODE,
             personalData = PersonalData("3333 123456", "10407"),

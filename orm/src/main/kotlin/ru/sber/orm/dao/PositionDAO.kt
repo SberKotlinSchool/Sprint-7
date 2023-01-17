@@ -1,11 +1,11 @@
-package ru.sber.dao
+package ru.sber.orm.dao
 
 import org.hibernate.SessionFactory
-import ru.sber.entities.Department
+import ru.sber.orm.entities.Position
 
-class DepartmentDAO(private val sessionFactory: SessionFactory
+class PositionDAO(private val sessionFactory: SessionFactory
 ) {
-    fun save(department: Department) {
+    fun save(department: Position) {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
             session.save(department)
@@ -13,21 +13,21 @@ class DepartmentDAO(private val sessionFactory: SessionFactory
         }
     }
 
-    fun find(id: Long): Department? {
-        val result: Department?
+    fun find(id: Long): Position? {
+        val result: Position?
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            result = session.get(Department::class.java, id)
+            result = session.get(Position::class.java, id)
             session.transaction.commit()
         }
         return result
     }
 
-    fun findAll(): List<Department> {
-        val result: List<Department>
+    fun findAll(): List<Position> {
+        val result: List<Position>
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            result = session.createQuery("from Department").list() as List<Department>
+            result = session.createQuery("from Position").list() as List<Position>
             session.transaction.commit()
         }
         return result

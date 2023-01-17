@@ -1,4 +1,4 @@
-package ru.sber.entities
+package ru.sber.orm.entities
 
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
@@ -13,11 +13,11 @@ class Appointment(
     var id: Long = 0,
 
     @JoinColumn(name = "employee_id")
-    @OneToOne
+    @ManyToOne
     var employee: Employee,
 
     @JoinColumn(name = "post_id")
-    @OneToOne
+    @ManyToOne
     var post: Position,
 
     var salary: Double,
