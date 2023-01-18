@@ -16,6 +16,9 @@
         <junit.jupiter.version>5.7.2</junit.jupiter.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+
+        <jdbc.driver>org.postgresql.Driver</jdbc.driver>
+        <jdbc.url>jdbc:postgresql://localhost:5432/db</jdbc.url>
     </properties>
     <dependencies>
         <dependency>
@@ -108,7 +111,8 @@
                 <configuration>
                     <changeLogFile>${basedir}/src/main/resources/changelog-master.yaml</changeLogFile>
                     <changeLogDirectory>${basedir}/src/main/resources/</changeLogDirectory>
-                     <url>jdbc:postgresql://localhost:5432/db</url>
+                    <driver>${jdbc.driver}</driver>
+                    <url>${jdbc.url}</url>
                     <username>test_user</username>
                     <password>test_user</password>
                 </configuration>
