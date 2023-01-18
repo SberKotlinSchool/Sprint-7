@@ -4,8 +4,8 @@ import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository
 import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
-import ru.sber.entities.Appointment
-import ru.sber.entities.Employee
+import ru.sber.springdata.entities.Appointment
+import ru.sber.springdata.entities.Employee
 
 @Repository
 interface AppointmentRepository : CrudRepository<Appointment, Long> {

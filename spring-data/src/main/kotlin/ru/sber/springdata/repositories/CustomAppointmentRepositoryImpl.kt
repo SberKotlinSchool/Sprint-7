@@ -1,7 +1,7 @@
 package ru.sber.springdata.repositories
 
 import org.springframework.stereotype.Repository
-import ru.sber.entities.Appointment
+import ru.sber.springdata.entities.Appointment
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 

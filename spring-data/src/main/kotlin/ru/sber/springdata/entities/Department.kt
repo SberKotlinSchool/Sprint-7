@@ -1,4 +1,4 @@
-package ru.sber.entities
+package ru.sber.springdata.entities
 
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp

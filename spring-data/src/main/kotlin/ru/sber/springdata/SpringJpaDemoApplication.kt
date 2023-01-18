@@ -6,13 +6,11 @@ import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.boot.runApplication
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
-import ru.sber.entities.*
+import ru.sber.springdata.entities.*
 import ru.sber.springdata.repositories.*
 import java.time.LocalDate
 
 @SpringBootApplication
-@EntityScan("ru.sber.entities")
-@EnableJpaRepositories("ru.sber.springdata.repositories")
 class SpringJpaDemoApplication (
     private val employeeRepository: EmployeeRepository,
     private val departmentRepository: DepartmentRepository,

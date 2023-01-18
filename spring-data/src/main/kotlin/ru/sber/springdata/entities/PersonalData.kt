@@ -1,4 +1,4 @@
-package ru.sber.entities
+package ru.sber.springdata.entities
 
 import javax.persistence.Embeddable
 

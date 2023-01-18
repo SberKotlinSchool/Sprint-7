@@ -1,7 +1,9 @@
-package ru.sber.entities
+package ru.sber.springdata.entities
 
 import org.hibernate.annotations.CreationTimestamp
 import org.hibernate.annotations.UpdateTimestamp
+import ru.sber.springdata.entities.Employee
+import ru.sber.springdata.entities.Position
 import java.time.LocalDate
 import java.time.LocalDateTime
 import javax.persistence.*
