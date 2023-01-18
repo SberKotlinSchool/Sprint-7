@@ -94,13 +94,13 @@ class SpringJpaDemoApplication (
 //        println(appointments)
 //        println(appointmentsWithSalary)
 
-        val pageResult = appointmentPagingRepository.findAll(PageRequest.of(1, 10))
-        println("Total elements: ${pageResult.totalElements}")
-        println("Total pages: ${pageResult.totalPages}")
-        println("page 1: ${pageResult.content}")
-
-        val resultAll = customAppointmentRepository.findAllActualAppointment()
-        println(resultAll)
+//        val pageResult = appointmentPagingRepository.findAll(PageRequest.of(1, 10))
+//        println("Total elements: ${pageResult.totalElements}")
+//        println("Total pages: ${pageResult.totalPages}")
+//        println("page 1: ${pageResult.content}")
+//
+//        val resultAll = customAppointmentRepository.findAllActualAppointment()
+//        println(resultAll)
     }
 }
 
