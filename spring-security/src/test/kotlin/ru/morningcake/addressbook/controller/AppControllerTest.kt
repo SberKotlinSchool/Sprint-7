@@ -11,15 +11,20 @@ import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpMethod.GET
 import org.springframework.http.HttpMethod.POST
+import org.springframework.security.test.context.support.TestExecutionEvent
+import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import ru.morningcake.addressbook.BaseNotesTest
 import java.util.stream.Stream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Sql("classpath:sql/userInit.sql")
 internal class AppControllerTest : BaseNotesTest() {
 
     @Test
     @DisplayName("GET /app/list")
+    @WithUserDetails(value = "user", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun showBook() {
         val mvcResult = GET("/app/list", status().isOk)
 
@@ -35,6 +40,7 @@ internal class AppControllerTest : BaseNotesTest() {
     @ParameterizedTest(name = "#{index} - filter {0}")
     @DisplayName("POST /app/filter")
     @ValueSource(strings = ["%2B7123", "me1", "ess1"]) //+ %2B
+    @WithUserDetails(value = "user", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun showFilteredBook(filter : String) {
         // отфильтруем вторую запись
         val mvcResult = POST("/app/filter", "filter=$filter", status().isOk)
@@ -51,6 +57,7 @@ internal class AppControllerTest : BaseNotesTest() {
 
     @Test
     @DisplayName("GET /app/note/{id}")
+    @WithUserDetails(value = "user", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun showNote() {
         val mvcResult = GET("/app/note/${note1.id}", status().isOk)
 
@@ -63,6 +70,7 @@ internal class AppControllerTest : BaseNotesTest() {
 
     @Test
     @DisplayName("POST /app/create")
+    @WithUserDetails(value = "user", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun createNote() {
         val newNoteFormData = getDtoString()
         val mvcResult = POST("/app/create", newNoteFormData, status().isOk)
@@ -84,6 +92,7 @@ internal class AppControllerTest : BaseNotesTest() {
 
     @Test
     @DisplayName("POST /app/note/{id}/update")
+    @WithUserDetails(value = "user", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun updateNote() {
         val newNoteFormData = "${getDtoString()}update"
         val mvcResult = POST("/app/note/${note1.id}/update", newNoteFormData, status().isOk)
@@ -105,6 +114,7 @@ internal class AppControllerTest : BaseNotesTest() {
 
     @Test
     @DisplayName("GET /app/note/{id}/delete")
+    @WithUserDetails(value = "deleter", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun deleteNote() {
         val mvcResult = GET("/app/note/${note1.id}/delete", status().isOk)
 
@@ -127,11 +137,11 @@ internal class AppControllerTest : BaseNotesTest() {
     @MethodSource("appAuthTestArguments")
     fun apiAuthTest(method : HttpMethod, uri : String, content : Any?) {
         val mvcResult = when (method) {
-            GET -> withoutCookieGET(uri, status().isFound) // 302 redirect
-            POST -> withoutCookiePOST(uri, writeJson(content!!), status().isFound)
+            GET -> GET(uri, status().isFound) // 302 redirect
+            POST -> POST(uri, writeJson(content!!), status().isFound)
             else -> throw IllegalArgumentException("Неподдерживаемый метод для теста!")
         }
-        assertEquals("/login", mvcResult.response.getHeader("Location"))
+        assertEquals("http://localhost/login", mvcResult.response.getHeader("Location"))
     }
 
     private fun appAuthTestArguments() : Stream<Arguments> {

@@ -32,7 +32,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http
             .authorizeRequests()
-            .antMatchers("/", "/static/**", "/h2-console").permitAll()
+            .antMatchers("/", "/static/**").permitAll()
             .anyRequest().authenticated()
             .and()
                 .sessionManagement()
@@ -48,6 +48,9 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
                 .logoutSuccessUrl("/login")
                 .deleteCookies("JSESSIONID")
                 .permitAll()
+            .and()
+                .csrf()
+                .ignoringAntMatchers("/login", "/logout", "/api/**")
     }
 
     @Throws(Exception::class)

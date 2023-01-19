@@ -10,6 +10,9 @@ import org.junit.jupiter.params.provider.MethodSource
 import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpMethod.*
+import org.springframework.security.test.context.support.TestExecutionEvent
+import org.springframework.security.test.context.support.WithUserDetails
+import org.springframework.test.context.jdbc.Sql
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import ru.morningcake.addressbook.BaseNotesTest
 import ru.morningcake.addressbook.dto.NoteDto
@@ -20,12 +23,14 @@ import java.util.*
 import java.util.stream.Stream
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@Sql("classpath:sql/userInit.sql")
 internal class ApiControllerTest : BaseNotesTest() {
 
     private val baseUri = "/api/note"
 
     @Test
     @DisplayName("GET /api/note/list")
+    @WithUserDetails(value = "user", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun getBook() {
         val mvcResult = apiGET("$baseUri/list", status().isOk)
 
@@ -43,6 +48,7 @@ internal class ApiControllerTest : BaseNotesTest() {
     @ParameterizedTest(name = "#{index} - filter {0}")
     @DisplayName("GET /api/note/list with filter")
     @ValueSource(strings = ["+7123", "me1", "ess1"]) //+ %2B
+    @WithUserDetails(value = "user", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun getBookWithFilter(filter : String) {
         val mvcResult = apiGET("$baseUri/list?filter=$filter", status().isOk)
 
@@ -58,6 +64,7 @@ internal class ApiControllerTest : BaseNotesTest() {
 
     @Test
     @DisplayName("GET /api/note/{id}")
+    @WithUserDetails(value = "user", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun getNote() {
         val mvcResult = apiGET("$baseUri/${note1.id}", status().isOk)
 
@@ -72,6 +79,7 @@ internal class ApiControllerTest : BaseNotesTest() {
 
     @Test
     @DisplayName("GET /api/note/{id} - incorrect id")
+    @WithUserDetails(value = "user", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun getNote_incorrectId() {
         val randomUUID = UUID.randomUUID()
         val mvcResult = apiGET("$baseUri/$randomUUID", status().isNotFound)
@@ -84,6 +92,7 @@ internal class ApiControllerTest : BaseNotesTest() {
 
     @Test
     @DisplayName("POST /api/note")
+    @WithUserDetails(value = "user", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun createNote() {
         val noteDto = getDto()
         val mvcResult = apiPOST(baseUri, writeJson(noteDto), status().isOk)
@@ -106,6 +115,7 @@ internal class ApiControllerTest : BaseNotesTest() {
 
     @Test
     @DisplayName("POST /api/note - validation test")
+    @WithUserDetails(value = "user", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun createNote_validationTest() {
         val invalidDto = NoteDto(name = "", phone = "+12345", address = "", comment = "")
         val mvcResult = apiPOST(baseUri, writeJson(invalidDto), status().isBadRequest)
@@ -121,6 +131,7 @@ internal class ApiControllerTest : BaseNotesTest() {
 
     @Test
     @DisplayName("PUT /api/note/{id}")
+    @WithUserDetails(value = "user", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun updateNote() {
         val noteDto = getDto()
         val mvcResult = apiPUT("$baseUri/${note1.id}", writeJson(noteDto), status().isOk)
@@ -143,6 +154,7 @@ internal class ApiControllerTest : BaseNotesTest() {
 
     @Test
     @DisplayName("PUT /api/note/{id} - incorrect id")
+    @WithUserDetails(value = "user", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun updateNote_incorrectId() {
         val randomUUID = UUID.randomUUID()
         val noteDto = getDto()
@@ -156,6 +168,7 @@ internal class ApiControllerTest : BaseNotesTest() {
 
     @Test
     @DisplayName("PUT /api/note/{id} - validation test")
+    @WithUserDetails(value = "user", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun updateNote_validationTest() {
         val invalidDto = NoteDto(name = "test", phone = "", address = "samara", comment = "")
         val mvcResult = apiPUT("$baseUri/${note1.id}", writeJson(invalidDto), status().isBadRequest)
@@ -168,6 +181,7 @@ internal class ApiControllerTest : BaseNotesTest() {
 
     @Test
     @DisplayName("DELETE /api/note/{id}")
+    @WithUserDetails(value = "deleter", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun deleteNote() {
         apiDELETE("$baseUri/${note1.id}", status().isOk)
 
@@ -177,6 +191,7 @@ internal class ApiControllerTest : BaseNotesTest() {
 
     @Test
     @DisplayName("DELETE /api/note/{id} - incorrect id")
+    @WithUserDetails(value = "deleter", setupBefore = TestExecutionEvent.TEST_EXECUTION)
     fun deleteNote_incorrectId() {
         val randomUUID = UUID.randomUUID()
         val mvcResult = apiDELETE("$baseUri/$randomUUID", status().isNotFound)
@@ -191,13 +206,14 @@ internal class ApiControllerTest : BaseNotesTest() {
     @DisplayName("Auth test")
     @MethodSource("apiAuthTestArguments")
     fun apiAuthTest(method : HttpMethod, uri : String, content : Any?) {
-        when(method) {
-            GET -> withoutCookieApiGET(uri, status().isForbidden)
-            POST -> withoutCookieApiPOST(uri, writeJson(content!!), status().isForbidden)
-            PUT -> withoutCookieApiPUT(uri, writeJson(content!!), status().isForbidden)
-            DELETE -> withoutCookieApiDELETE(uri, status().isForbidden)
+        val mvcResult = when (method) {
+            GET -> apiGET(uri, status().isFound)
+            POST -> apiPOST(uri, writeJson(content!!), status().isFound)
+            PUT -> apiPUT(uri, writeJson(content!!), status().isFound)
+            DELETE -> apiDELETE(uri, status().isFound)
             else -> throw IllegalArgumentException("Неподдерживаемый метод для теста!")
         }
+        assertEquals("http://localhost/login", mvcResult.response.getHeader("Location"))
     }
 
     private fun apiAuthTestArguments() : Stream<Arguments> {

@@ -2,8 +2,27 @@ server:
   port: 0
 
 spring:
+  main:
+    allow-circular-references: true
   freemarker:
-    cache: false
+    cache: true
+  datasource:
+    url: jdbc:postgresql://localhost:5432/kotlin
+    username: postgres
+    password: root
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      max-lifetime: 2000000
+      maximum-pool-size: 10
+      idle-timeout: 600000
+      minimum-idle: 1
+      schema: sec
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
 
 app:
-  baseUrl: http://localhost:0
+  baseUrl: http://localhost:8500

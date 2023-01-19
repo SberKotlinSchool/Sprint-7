@@ -13,7 +13,7 @@ class User (
     // custom props
     @Id
     @GeneratedValue
-    val id: UUID? = null,
+    var id: UUID? = null,
 
     @Column(name = "created_date", nullable = false, updatable = false)
     val createdDate: LocalDateTime? = LocalDateTime.now(),

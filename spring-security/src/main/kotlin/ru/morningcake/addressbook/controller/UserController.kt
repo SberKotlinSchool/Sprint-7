@@ -21,7 +21,7 @@ class UserController @Autowired constructor(private val service: UserService, pr
     @PreAuthorize("hasAuthority('ADMIN')")
     @GetMapping("/admin_panel")
     fun adminPanel(@AuthenticationPrincipal admin: User, model: Model): String {
-        appUtils.addBaseUrlAndUserNameToModel(model, admin.name!!)
+        appUtils.addBaseUrlAndUserNameToModel(model, admin.username)
         addAllUsersToModel(admin, model)
         return "admin"
     }
@@ -30,7 +30,7 @@ class UserController @Autowired constructor(private val service: UserService, pr
     @PostMapping("/admin_panel/filter")
     fun showUsers(@AuthenticationPrincipal self: User, model: Model, filter: String): String {
         val users: List<User> = service.getUsersWithFilter(self, filter)
-        appUtils.addBaseUrlAndUserNameToModel(model, self.name!!)
+        appUtils.addBaseUrlAndUserNameToModel(model, self.username)
         model.addAttribute("users", users)
         model.addAttribute("filter", filter)
         return "admin"
@@ -40,7 +40,7 @@ class UserController @Autowired constructor(private val service: UserService, pr
     @GetMapping("/admin_panel/user/{id}/ban")
     fun userBan(@AuthenticationPrincipal admin: User, model: Model, @PathVariable id: UUID): String {
         service.userBan(admin, id)
-        appUtils.addBaseUrlAndUserNameToModel(model, admin.name!!)
+        appUtils.addBaseUrlAndUserNameToModel(model, admin.username)
         addAllUsersToModel(admin, model)
         return "admin"
     }
@@ -49,7 +49,7 @@ class UserController @Autowired constructor(private val service: UserService, pr
     @GetMapping("/admin_panel/user/{id}/delete_ban")
     fun deleteUserBan(@AuthenticationPrincipal admin: User, model: Model, @PathVariable id: UUID): String {
         service.deleteUserBan(id)
-        appUtils.addBaseUrlAndUserNameToModel(model, admin.name!!)
+        appUtils.addBaseUrlAndUserNameToModel(model, admin.username)
         addAllUsersToModel(admin, model)
         return "admin"
     }
