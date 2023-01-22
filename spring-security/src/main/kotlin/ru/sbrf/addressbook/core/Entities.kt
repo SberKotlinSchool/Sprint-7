@@ -3,6 +3,7 @@ package ru.sbrf.addressbook.core
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import java.util.stream.Collectors
 import javax.persistence.*
 import javax.validation.constraints.Email
 import javax.validation.constraints.NotBlank
@@ -68,7 +69,8 @@ class UserDetailsAdapter(val user: User) : UserDetails {
     init {
         authoritiesList = user.groups.split(",")
             .stream()
-            .map(::SimpleGrantedAuthority).toList()
+            .map(::SimpleGrantedAuthority)
+            .collect(Collectors.toList())
     }
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> = authoritiesList
