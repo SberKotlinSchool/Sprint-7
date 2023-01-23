@@ -6,7 +6,7 @@ import org.springframework.boot.web.servlet.ServletComponentScan
 
 @ServletComponentScan
 @SpringBootApplication
-open class AddressbookApplication
+class AddressbookApplication
 
 fun main(args: Array<String>) {
 	runApplication<AddressbookApplication>(*args)

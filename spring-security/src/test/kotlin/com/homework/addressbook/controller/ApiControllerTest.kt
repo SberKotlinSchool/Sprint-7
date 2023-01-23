@@ -12,6 +12,7 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.security.test.context.support.WithUserDetails
 import java.time.LocalDateTime
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -33,6 +34,7 @@ internal class ApiControllerTest {
     }
 
     @Test
+    @WithUserDetails("API")
     fun addRecord() {
         val response = restTemplate.exchange(
             url("/api/add"),
@@ -43,6 +45,7 @@ internal class ApiControllerTest {
     }
 
     @Test
+    @WithUserDetails("API")
     fun getRecords() {
         val response = restTemplate.exchange(
             url("/api/list"),
@@ -54,6 +57,7 @@ internal class ApiControllerTest {
     }
 
     @Test
+    @WithUserDetails("API")
     fun getCurrentRecord() {
         val response = restTemplate.exchange(
             url("/api/1/view"),
@@ -65,6 +69,7 @@ internal class ApiControllerTest {
     }
 
     @Test
+    @WithUserDetails("API")
     fun editRecord() {
         val record = Record("TEST","TEST","TEST","TEST");
         val response = restTemplate.exchange(
@@ -76,6 +81,7 @@ internal class ApiControllerTest {
     }
 
     @Test
+    @WithUserDetails("API")
     fun deleteRecord() {
         val response = restTemplate.exchange(
             url("/api/2/delete"),

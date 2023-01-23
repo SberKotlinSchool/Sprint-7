@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.test.context.support.WithUserDetails
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -21,6 +22,7 @@ class AppControllerTest {
     private lateinit var mockMvc: MockMvc
 
     @Test
+    @WithUserDetails("ADMIN")
     fun addRecord() {
         mockMvc.perform( MockMvcRequestBuilders.post("/app/add")
             .cookie(Cookie("auth", LocalDateTime.now().toString()))
@@ -29,6 +31,7 @@ class AppControllerTest {
     }
 
     @Test
+    @WithUserDetails("USER")
     fun getRecords() {
         mockMvc.perform(MockMvcRequestBuilders.get("/app/list")
                 .cookie(Cookie("auth", LocalDateTime.now().toString())))
@@ -38,6 +41,7 @@ class AppControllerTest {
     }
 
     @Test
+    @WithUserDetails("USER")
     fun getCurrentRecord() {
         mockMvc.perform( MockMvcRequestBuilders.get("/app/2/view")
                 .cookie(Cookie("auth", LocalDateTime.now().toString())))
@@ -46,6 +50,7 @@ class AppControllerTest {
     }
 
     @Test
+    @WithUserDetails("ADMIN")
     fun editRecordView() {
         mockMvc.perform( MockMvcRequestBuilders.get("/app/3/edit")
             .cookie(Cookie("auth", LocalDateTime.now().toString())))
@@ -54,6 +59,7 @@ class AppControllerTest {
     }
 
     @Test
+    @WithUserDetails("ADMIN")
     fun editRecordSubmit() {
         mockMvc.perform( MockMvcRequestBuilders.post("/app/3/edit")
             .cookie(Cookie("auth", LocalDateTime.now().toString()))
@@ -62,6 +68,7 @@ class AppControllerTest {
     }
 
     @Test
+    @WithUserDetails("ADMIN")
     fun deleteRecord() {
         mockMvc.perform( MockMvcRequestBuilders.delete("/app/3/delete")
             .cookie(Cookie("auth", LocalDateTime.now().toString())))

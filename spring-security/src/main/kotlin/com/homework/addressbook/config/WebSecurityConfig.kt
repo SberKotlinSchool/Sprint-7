@@ -15,13 +15,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-open class WebSecurityConfig @Autowired constructor(): WebSecurityConfigurerAdapter()
+class WebSecurityConfig @Autowired constructor(): WebSecurityConfigurerAdapter()
 {
     @Autowired
     private val userService: UserService? = null
 
     @Bean
-    open fun bCryptPasswordEncoder(): BCryptPasswordEncoder = BCryptPasswordEncoder()
+    fun bCryptPasswordEncoder(): BCryptPasswordEncoder = BCryptPasswordEncoder()
 
     override fun configure(httpSecurity: HttpSecurity) {
         httpSecurity
