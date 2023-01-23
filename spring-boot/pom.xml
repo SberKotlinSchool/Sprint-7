@@ -81,10 +81,4 @@
             </plugin>
         </plugins>
     </build>
-
-    <compilerPlugins>
-        <plugin>spring</plugin>
-        <plugin>jpa</plugin>
-    </compilerPlugins>
-
 </project>
