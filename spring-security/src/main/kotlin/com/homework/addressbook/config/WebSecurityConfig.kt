@@ -31,7 +31,7 @@ class WebSecurityConfig @Autowired constructor(): WebSecurityConfigurerAdapter()
             //Доступ только для не зарегистрированных пользователей
             .antMatchers("/registration").not().fullyAuthenticated()
             //Доступ только для пользователей с ролью API
-            .antMatchers("/api/**").hasRole("API")
+            .antMatchers("/api/").hasRole("API")
             //Доступ только для пользователей с ролью USER|ADMIN|EDITOR
             .antMatchers("/app/").access("hasRole('USER') or hasRole('ADMIN') or hasRole('EDITOR')")
             //Доступ разрешен всем пользователей
