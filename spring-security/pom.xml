@@ -121,7 +121,7 @@
 				<artifactId>liquibase-maven-plugin</artifactId>
 				<version>4.5.0</version>
 				<configuration>
-					<changeLogFile>${project.basedir}/src/main/resources/db_log.yaml</changeLogFile>
+					<changeLogFile>${project.basedir}/src/main/resources/db.changelog-master.yaml</changeLogFile>
 					<changeLogDirectory>${project.basedir}/src/main/resources/</changeLogDirectory>
 					<url>jdbc:postgresql://localhost:5432/best</url>
 					<username>postgres</username>
