@@ -8,6 +8,9 @@ logging:
     org.hibernate: INFO
 
 spring:
+  liquibase:
+    default-schema: sec
+    enabled: false
   main:
     allow-circular-references: true
   freemarker:
@@ -29,6 +32,9 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
+    properties:
+      hibernate:
+        default_schema: sec
 
 app:
   baseUrl: http://localhost:8500

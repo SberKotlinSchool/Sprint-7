@@ -2,6 +2,9 @@ server:
   port: 0
 
 spring:
+  liquibase:
+    default-schema: sec
+    enabled: true
   main:
     allow-circular-references: true
   freemarker:
@@ -22,7 +25,10 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL10Dialect
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: sec
 
 app:
   baseUrl: http://localhost:8500

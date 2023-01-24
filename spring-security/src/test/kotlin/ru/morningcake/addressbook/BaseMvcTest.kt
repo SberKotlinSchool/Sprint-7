@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -15,6 +16,10 @@ import org.springframework.test.web.servlet.MockMvc
 @SpringBootTest
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
+@AutoConfigureEmbeddedDatabase(
+    provider = AutoConfigureEmbeddedDatabase.DatabaseProvider.YANDEX,
+    type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES,
+)
 abstract class BaseMvcTest {
 
     @Autowired
