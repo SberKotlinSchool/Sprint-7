@@ -71,7 +71,7 @@ class AclConfigure {
      */
     @Bean
     fun aclCacheManager(): EhCacheManagerFactoryBean {
-        return EhCacheManagerFactoryBean()
+        return EhCacheManagerFactoryBean().apply { setShared(true) }
     }
 
     /**
