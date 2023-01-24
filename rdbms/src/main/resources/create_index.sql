@@ -1,0 +1,1 @@
+create index on account1 (id, version)
