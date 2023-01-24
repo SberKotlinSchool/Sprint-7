@@ -17,7 +17,7 @@ import org.springframework.test.web.servlet.MockMvc
 @ActiveProfiles("test")
 @AutoConfigureMockMvc
 @AutoConfigureEmbeddedDatabase(
-    provider = AutoConfigureEmbeddedDatabase.DatabaseProvider.YANDEX,
+    provider = AutoConfigureEmbeddedDatabase.DatabaseProvider.ZONKY,
     type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES,
 )
 abstract class BaseMvcTest {
