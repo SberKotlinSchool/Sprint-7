@@ -3,6 +3,7 @@ package ru.sber.addressbook.entity
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import java.util.stream.Collectors
 import javax.persistence.*
 
 @Entity
@@ -35,7 +36,7 @@ class UserDetailsAdapter(val user: User) : UserDetails {
     private val authoritiesList: MutableCollection<out GrantedAuthority>
 
     init {
-        authoritiesList = user.groups.split(",").stream().map(::SimpleGrantedAuthority).toList()
+        authoritiesList = user.groups.split(",").stream().map(::SimpleGrantedAuthority).collect(Collectors.toList())
     }
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> = authoritiesList
