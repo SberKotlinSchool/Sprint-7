@@ -16,6 +16,9 @@
         <junit.jupiter.version>5.7.2</junit.jupiter.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
+
+        <jdbc.driver>org.postgresql.Driver</jdbc.driver>
+        <jdbc.url>jdbc:postgresql://localhost:5432/db</jdbc.url>
     </properties>
     <dependencies>
         <dependency>
@@ -61,6 +64,8 @@
     </dependencies>
 
     <build>
+        <sourceDirectory>${project.basedir}/src/main/kotlin</sourceDirectory>
+        <testSourceDirectory>${project.basedir}/src/test/kotlin</testSourceDirectory>
         <plugins>
             <plugin>
                 <groupId>org.jetbrains.kotlin</groupId>
@@ -104,10 +109,12 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>4.5.0</version>
                 <configuration>
-                    <changeLogFile>db.changelog-master.yaml</changeLogFile>
-                    <url>jdbc:postgresql://localhost:5432/db</url>
-                    <username>postgres</username>
-                    <password>postgres</password>
+                    <changeLogFile>${basedir}/src/main/resources/changelog-master.yaml</changeLogFile>
+                    <changeLogDirectory>${basedir}/src/main/resources/</changeLogDirectory>
+                    <driver>${jdbc.driver}</driver>
+                    <url>${jdbc.url}</url>
+                    <username>test_user</username>
+                    <password>test_user</password>
                 </configuration>
             </plugin>
         </plugins>
