@@ -4,8 +4,9 @@ import java.sql.DriverManager
 import java.sql.SQLException
 
 class TransferOptimisticLock {
+    private val connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/db", "postgres", "postgres")
+
     fun transfer(accountId1: Long, accountId2: Long, amount: Long) {
-        val connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/db", "postgres", "postgres")
 
         connection.use { conn ->
             val autoCommit = conn.autoCommit
@@ -15,7 +16,7 @@ class TransferOptimisticLock {
                 var version1: Long
                 var version2: Long
 
-                val statementGetAccount1 = conn.prepareStatement("SELECT * FROM account1 WHERE id = ?")
+                val statementGetAccount1 = conn.prepareStatement("SELECT * FROM account WHERE id = ?")
 
                 statementGetAccount1.use { statement ->
                     statement.setLong(1, accountId1)
@@ -27,7 +28,7 @@ class TransferOptimisticLock {
                     }
                 }
 
-                val statementGetAccount2 = conn.prepareStatement("SELECT * FROM account1 WHERE id = ?")
+                val statementGetAccount2 = conn.prepareStatement("SELECT * FROM account WHERE id = ?")
                 statementGetAccount2.use { statement ->
                     statement.setLong(1, accountId2)
                     statement.executeQuery().use { result ->
@@ -37,7 +38,12 @@ class TransferOptimisticLock {
                 }
 
                 val statementUpdateAccounts =
-                    conn.prepareStatement("UPDATE account1 SET amount = amount + ?, version = version + 1 WHERE id = ? AND version = ?")
+                    conn.prepareStatement(
+                        """
+                        UPDATE account SET amount = amount + ?, version = version + 1 
+                        WHERE id = ? AND version = ?
+                        """
+                    )
 
                 statementUpdateAccounts.use { statement ->
                     statement.setLong(1, -amount)

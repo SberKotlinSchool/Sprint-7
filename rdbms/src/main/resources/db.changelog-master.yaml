@@ -1,5 +1,0 @@
-databaseChangeLog:
-  - include:
-      file: C:\Users\astaf\IdeaProjects\example\Sprint-7\rdbms\src\main\resources\init.sql
-
-

@@ -4,14 +4,15 @@ import java.sql.DriverManager
 import java.sql.SQLException
 
 class TransferPessimisticLock {
+    private val connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/db", "postgres", "postgres")
+
     fun transfer(accountId1: Long, accountId2: Long, amount: Long) {
-        val connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/db", "postgres", "postgres")
         connection.use { conn ->
             val autoCommit = conn.autoCommit
             try {
                 conn.autoCommit = false
 
-                val statementLock = conn.prepareStatement("SELECT * FROM account1 WHERE id IN (?,?) FOR UPDATE")
+                val statementLock = conn.prepareStatement("SELECT * FROM account WHERE id IN (?,?) FOR UPDATE")
 
                 statementLock.use { statement ->
                     statement.setLong(1, accountId1)
@@ -27,7 +28,7 @@ class TransferPessimisticLock {
                     }
                 }
 
-                val updateStatement = conn.prepareStatement("UPDATE account1 SET amount = amount + ? WHERE id = ?")
+                val updateStatement = conn.prepareStatement("UPDATE account SET amount = amount + ? WHERE id = ?")
                 updateStatement.use { statement ->
                     statement.setLong(1, -amount)
                     statement.setLong(2, accountId1)
