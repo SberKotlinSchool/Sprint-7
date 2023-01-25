@@ -1,5 +1,6 @@
 package ru.sber.addressbook
 
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase
 import org.hamcrest.Matchers
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -10,12 +11,13 @@ import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
-import java.time.LocalDate
-import javax.servlet.http.Cookie
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
+@AutoConfigureEmbeddedDatabase(
+	provider = AutoConfigureEmbeddedDatabase.DatabaseProvider.ZONKY,
+	type = AutoConfigureEmbeddedDatabase.DatabaseType.POSTGRES)
 class AddressbookMvcControllerTest {
 
 	@Autowired
