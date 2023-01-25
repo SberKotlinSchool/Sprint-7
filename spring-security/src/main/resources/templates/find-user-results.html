@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Результаты поиска</title>
+</head>
+<body>
+    <h3>Результаты поиска</h3>
+    <br/>
+    <div th:switch="${users.size}">
+        <div th:case="0">
+            Не найдено
+        </div>
+        <div th:case="*">
+            <table style="width: 80%">
+                <thead>
+                <tr>
+                    <td style="width: 150px"><b>Id</b></td>
+                    <td style="width: 300px"><b>Имя</b></td>
+                    <td style="width: 100px"><b>Логин</b></td>
+                    <td style="width: 500px"><b>Адрес</b></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${users}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.name}"></td>
+                    <td th:text="${user.login}"></td>
+                    <td th:text="${user.address?.addr}"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <br/>
+    <a href="/">На главную</a>
+</body>
+</html>

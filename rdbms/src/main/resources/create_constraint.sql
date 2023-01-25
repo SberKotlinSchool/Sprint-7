@@ -1,0 +1,1 @@
+ALTER TABLE public.account1 ADD CONSTRAINT account1_check_positive_amount CHECK (amount >= 0);
