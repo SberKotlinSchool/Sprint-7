@@ -7,7 +7,6 @@ import javax.persistence.*
 class Message {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
     var id: Long? = null
 
     @Column
