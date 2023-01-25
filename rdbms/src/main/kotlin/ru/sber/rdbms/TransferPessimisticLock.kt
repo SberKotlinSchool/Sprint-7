@@ -52,7 +52,3 @@ class TransferPessimisticLock {
         }
     }
 }
-
-fun main() {
-    TransferPessimisticLock().transfer(1, 2, 10000)
-}
