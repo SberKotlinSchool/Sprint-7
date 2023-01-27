@@ -1,5 +1,6 @@
 package ru.sber.app.config
 
+import net.sf.ehcache.CacheManager
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.ehcache.EhCacheFactoryBean
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
@@ -73,6 +74,7 @@ class AclConfigure {
          */
         @Bean
         fun aclCacheManager(): EhCacheManagerFactoryBean {
+            CacheManager.getCacheManager(null)?.shutdown()
             return EhCacheManagerFactoryBean()
         }
 

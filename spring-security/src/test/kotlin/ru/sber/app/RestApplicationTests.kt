@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import ru.sber.app.endpoint.dto.RequestData
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class RestApplicationTests {
     @LocalServerPort
     private var port: Int = 0
