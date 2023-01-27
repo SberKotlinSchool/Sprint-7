@@ -3,6 +3,7 @@ package ru.sber.app.config
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.ehcache.EhCacheFactoryBean
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
+import org.springframework.cache.support.NoOpCacheManager
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.access.PermissionEvaluator
@@ -71,17 +72,17 @@ class AclConfigure {
      * Настройка фабрики кэш менеджера
      */
     @Bean
-    fun aclCacheManager(): EhCacheManagerFactoryBean {
-        return EhCacheManagerFactoryBean()
+    fun aclCacheManager(): NoOpCacheManager{//EhCacheManagerFactoryBean {
+        return NoOpCacheManager()//EhCacheManagerFactoryBean()
     }
 
     /**
      * Настройка фабрики кэша
      */
     @Bean
-    fun ehCacheFactoryBean(cacheManagerFactory: EhCacheManagerFactoryBean): EhCacheFactoryBean {
+    fun ehCacheFactoryBean(cacheManagerFactory: NoOpCacheManager): EhCacheFactoryBean {
         val ehCacheFactoryBean = EhCacheFactoryBean()
-        ehCacheFactoryBean.setCacheManager(cacheManagerFactory.getObject()!!)
+        //ehCacheFactoryBean.setCacheManager(cacheManagerFactory.getObject()!!)
         ehCacheFactoryBean.setCacheName("aclCache")
         return ehCacheFactoryBean
     }
