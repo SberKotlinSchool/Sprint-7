@@ -68,24 +68,24 @@ class AclConfigure {
         )
     }
 
-    /**
-     * Настройка фабрики кэш менеджера
-     */
-    @Bean
-    fun aclCacheManager(): NoOpCacheManager{//EhCacheManagerFactoryBean {
-        return NoOpCacheManager()//EhCacheManagerFactoryBean()
-    }
+        /**
+         * Настройка фабрики кэш менеджера
+         */
+        @Bean
+        fun aclCacheManager(): EhCacheManagerFactoryBean {
+            return EhCacheManagerFactoryBean()
+        }
 
-    /**
-     * Настройка фабрики кэша
-     */
-    @Bean
-    fun ehCacheFactoryBean(cacheManagerFactory: NoOpCacheManager): EhCacheFactoryBean {
-        val ehCacheFactoryBean = EhCacheFactoryBean()
-        //ehCacheFactoryBean.setCacheManager(cacheManagerFactory.getObject()!!)
-        ehCacheFactoryBean.setCacheName("aclCache")
-        return ehCacheFactoryBean
-    }
+        /**
+         * Настройка фабрики кэша
+         */
+        @Bean
+        fun ehCacheFactoryBean(cacheManagerFactory: EhCacheManagerFactoryBean): EhCacheFactoryBean {
+            val ehCacheFactoryBean = EhCacheFactoryBean()
+            //ehCacheFactoryBean.setCacheManager(cacheManagerFactory.getObject()!!)
+            ehCacheFactoryBean.setCacheName("aclCache")
+            return ehCacheFactoryBean
+        }
 
     /**
      * Настраиваем стратегию поиска записей ACL. Используем базовый вариант
