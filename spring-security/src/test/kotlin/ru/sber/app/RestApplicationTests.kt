@@ -41,7 +41,6 @@ class RestApplicationTests {
             HttpEntity(requestData,HttpHeaders()),
             String::class.java)
         assertEquals(HttpStatus.FOUND, res.statusCode)
-        addressBookRepository.deleteAllInBatch()
     }
 
     @Test
@@ -53,7 +52,6 @@ class RestApplicationTests {
             String::class.java)
         assertEquals(HttpStatus.OK, res.statusCode)
         assertThat(res.body).isNotNull
-        addressBookRepository.deleteAllInBatch()
     }
 
     @Test
@@ -65,7 +63,6 @@ class RestApplicationTests {
             String::class.java)
         assertEquals(HttpStatus.OK, res.statusCode)
         assertThat(res.body).isNotNull
-        addressBookRepository.deleteAllInBatch()
     }
 
     @Test
@@ -76,7 +73,6 @@ class RestApplicationTests {
             HttpEntity(requestData,HttpHeaders()),
             String::class.java)
         assertEquals(HttpStatus.FOUND, res.statusCode)
-        addressBookRepository.deleteAllInBatch()
     }
 
     @Test
@@ -87,6 +83,5 @@ class RestApplicationTests {
             HttpEntity(requestData,HttpHeaders()),
             String::class.java)
         assertEquals(HttpStatus.FOUND, res.statusCode)
-        addressBookRepository.deleteAllInBatch()
     }
 }
