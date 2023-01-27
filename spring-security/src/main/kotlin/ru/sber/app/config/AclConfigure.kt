@@ -74,7 +74,7 @@ class AclConfigure {
          */
         @Bean
         fun aclCacheManager(): EhCacheManagerFactoryBean {
-            CacheManager.getCacheManager(null)?.shutdown()
+            //CacheManager.getCacheManager(null)?.shutdown()
             return EhCacheManagerFactoryBean()
         }
 
