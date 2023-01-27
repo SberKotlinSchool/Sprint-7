@@ -11,11 +11,14 @@ import org.springframework.http.*
 import org.springframework.test.annotation.DirtiesContext
 import org.springframework.web.bind.annotation.PostMapping
 import ru.sber.app.endpoint.dto.RequestData
+import ru.sber.app.repository.AddressBookRepository
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class RestApplicationTests {
     @LocalServerPort
     private var port: Int = 0
+    @Autowired
+    private lateinit var addressBookRepository: AddressBookRepository
     @Autowired
     private lateinit var restTemplate: TestRestTemplate
     private val requestData = RequestData("Алексей","Алексеев","Алексеевка", true)
@@ -38,6 +41,7 @@ class RestApplicationTests {
             HttpEntity(requestData,HttpHeaders()),
             String::class.java)
         assertEquals(HttpStatus.FOUND, res.statusCode)
+        addressBookRepository.deleteAllInBatch()
     }
 
     @Test
@@ -49,6 +53,7 @@ class RestApplicationTests {
             String::class.java)
         assertEquals(HttpStatus.OK, res.statusCode)
         assertThat(res.body).isNotNull
+        addressBookRepository.deleteAllInBatch()
     }
 
     @Test
@@ -60,6 +65,7 @@ class RestApplicationTests {
             String::class.java)
         assertEquals(HttpStatus.OK, res.statusCode)
         assertThat(res.body).isNotNull
+        addressBookRepository.deleteAllInBatch()
     }
 
     @Test
@@ -70,6 +76,7 @@ class RestApplicationTests {
             HttpEntity(requestData,HttpHeaders()),
             String::class.java)
         assertEquals(HttpStatus.FOUND, res.statusCode)
+        addressBookRepository.deleteAllInBatch()
     }
 
     @Test
@@ -80,5 +87,6 @@ class RestApplicationTests {
             HttpEntity(requestData,HttpHeaders()),
             String::class.java)
         assertEquals(HttpStatus.FOUND, res.statusCode)
+        addressBookRepository.deleteAllInBatch()
     }
 }
