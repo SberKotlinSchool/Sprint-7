@@ -18,7 +18,7 @@ import ru.sber.app.repository.AddressBookRepository
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+//@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class MvcMockApplicationTests {
 	@Autowired
 	private lateinit var mockMvc : MockMvc
@@ -64,7 +64,7 @@ class MvcMockApplicationTests {
 	@WithMockUser(username = "admin", password = "admin", roles = ["ADMIN"])
 	@Test
 	fun testViewApp() {
-		mockMvc.perform(get("/app/view/7"))
+		mockMvc.perform(get("/app/view/1"))
 			.andDo(print())
 			.andExpect(status().isOk)
 			.andExpect(view().name("view"))

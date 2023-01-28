@@ -4,8 +4,8 @@ import javax.persistence.*
 
 
 @Entity
-//@Table(name = "ADDRESSBOOK")
-data class ADDRESSBOOK(
+@Table(name = "ADDRESSBOOK")
+data class AddressBook(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
