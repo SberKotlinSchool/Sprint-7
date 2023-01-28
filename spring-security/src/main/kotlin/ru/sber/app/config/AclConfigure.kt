@@ -1,7 +1,10 @@
 package ru.sber.app.config
 
 import net.sf.ehcache.CacheManager
+import org.apache.catalina.users.DataSourceUserDatabase
+import org.apache.catalina.users.DataSourceUserDatabaseFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
 import org.springframework.cache.ehcache.EhCacheFactoryBean
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean
 import org.springframework.cache.support.NoOpCacheManager
@@ -74,7 +77,7 @@ class AclConfigure {
          */
         @Bean
         fun aclCacheManager(): EhCacheManagerFactoryBean {
-            CacheManager.getCacheManager(null)?.shutdown()
+            //CacheManager.getCacheManager(null)?.shutdown()
             return EhCacheManagerFactoryBean()
         }
 
@@ -84,7 +87,7 @@ class AclConfigure {
         @Bean
         fun ehCacheFactoryBean(cacheManagerFactory: EhCacheManagerFactoryBean): EhCacheFactoryBean {
             val ehCacheFactoryBean = EhCacheFactoryBean()
-            //ehCacheFactoryBean.setCacheManager(cacheManagerFactory.getObject()!!)
+            ehCacheFactoryBean.setCacheManager(cacheManagerFactory.getObject()!!)
             ehCacheFactoryBean.setCacheName("aclCache")
             return ehCacheFactoryBean
         }

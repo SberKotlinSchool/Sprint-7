@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.test.annotation.DirtiesContext
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -17,6 +18,7 @@ import ru.sber.app.repository.AddressBookRepository
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 class MvcMockApplicationTests {
 	@Autowired
 	private lateinit var mockMvc : MockMvc
@@ -83,7 +85,7 @@ class MvcMockApplicationTests {
 	@Test
 	fun testDeleteAppRoleAdmin() {
 		val dataExpected = addressBookRepository.findAll().size
-		mockMvc.perform(get("/app/remove/2"))
+		mockMvc.perform(get("/app/remove/7"))
 			.andDo(print())
 		assertEquals(dataExpected - 1, addressBookRepository.findAll().size)
 	}
