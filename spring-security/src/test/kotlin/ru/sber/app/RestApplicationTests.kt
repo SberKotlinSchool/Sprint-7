@@ -18,8 +18,6 @@ class RestApplicationTests {
     @LocalServerPort
     private var port: Int = 0
     @Autowired
-    private lateinit var addressBookRepository: AddressBookRepository
-    @Autowired
     private lateinit var restTemplate: TestRestTemplate
     private val requestData = RequestData("Алексей","Алексеев","Алексеевка", true)
 
