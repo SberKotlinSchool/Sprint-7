@@ -46,9 +46,7 @@
                 </executions>
                 <configuration>
                     <compilerPlugins>
-                        <plugin>jpa</plugin>
                         <plugin>all-open</plugin>
-                        <plugin>spring</plugin>
                         <plugin>no-arg</plugin>
                     </compilerPlugins>
                     <pluginOptions>
