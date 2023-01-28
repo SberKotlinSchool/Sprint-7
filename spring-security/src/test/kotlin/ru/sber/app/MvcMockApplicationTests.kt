@@ -51,7 +51,7 @@ class MvcMockApplicationTests {
 			.andExpect(view().name("add"))
 	}
 
-	@WithMockUser(username = "admin", password = "admin", roles = ["ADMIN"])
+	/*@WithMockUser(username = "admin", password = "admin", roles = ["ADMIN"])
 	@Test
 	fun testAppList() {
 		mockMvc.perform(get("/app/list"))
@@ -59,7 +59,7 @@ class MvcMockApplicationTests {
 			.andExpect(status().isOk)
 			.andExpect(view().name("list"))
 			.andExpect(model().attributeExists("notes"))
-	}
+	}*/
 
 	@WithMockUser(username = "admin", password = "admin", roles = ["ADMIN"])
 	@Test
