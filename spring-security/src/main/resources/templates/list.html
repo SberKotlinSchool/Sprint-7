@@ -9,8 +9,10 @@
     <a href="/app/add"><button>Add new</button></a>
     <a href="/logout"><button>Logout</button></a>
 </p>
+
 <p th:each="note:${notes}">
     <a th:href="@{'view/' + ${note.id}}" th:text="${note.toListString()}"></a>
 </p>
+
 </body>
 </html>
