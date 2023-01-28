@@ -8,7 +8,7 @@ import org.springframework.security.acls.domain.ObjectIdentityImpl
 import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.jdbc.JdbcMutableAclService
 import org.springframework.stereotype.Service
-import ru.sber.app.entity.ADDRESSBOOK
+import ru.sber.app.entity.AddressBook
 import ru.sber.app.repository.AddressBookRepository
 
 @Service
@@ -18,9 +18,9 @@ class AddressBookService(val repo: AddressBookRepository, val aclService: JdbcMu
      * Выбираем все записи и возвращаем только доступные клиенту
      */
     @PostFilter("hasRole('ADMIN') or hasPermission(filterObject, 'READ') or hasPermission(filterObject, 'DELETE')")
-    fun getAddressBook(): Iterable<ADDRESSBOOK> = repo.findAll()
+    fun getAddressBook(): Iterable<AddressBook> = repo.findAll()
 
-    fun getById(id: Long): ADDRESSBOOK = repo.findById(id).get()
+    fun getById(id: Long): AddressBook = repo.findById(id).get()
 
     fun remove(id: Long) {
         repo.deleteById(id)
@@ -29,7 +29,7 @@ class AddressBookService(val repo: AddressBookRepository, val aclService: JdbcMu
     /**
      * Во время создания так же не забываем создавать сущности ACL
      */
-    fun add(draft: ADDRESSBOOK, username: String): ADDRESSBOOK {
+    fun add(draft: AddressBook, username: String): AddressBook {
         val addressBook = repo.save(draft)
         createAclForOwner(addressBook, username)
         return addressBook
@@ -41,7 +41,7 @@ class AddressBookService(val repo: AddressBookRepository, val aclService: JdbcMu
      * Для публичных - дополнительно даем право READ для ROLE_USER группы
      */
     private fun createAclForOwner(
-        addressBook: ADDRESSBOOK,
+        addressBook: AddressBook,
         username: String
     ) {
         val identity = ObjectIdentityImpl(addressBook)
@@ -56,7 +56,7 @@ class AddressBookService(val repo: AddressBookRepository, val aclService: JdbcMu
         aclService.updateAcl(acl)
     }
 
-    fun update(addressBook: ADDRESSBOOK): ADDRESSBOOK {
+    fun update(addressBook: AddressBook): AddressBook {
         val persisted = repo.findById(addressBook.id).orElseThrow { NotFoundException("not found") }
         persisted.firstName = addressBook.firstName
         persisted.lastName = addressBook.lastName
