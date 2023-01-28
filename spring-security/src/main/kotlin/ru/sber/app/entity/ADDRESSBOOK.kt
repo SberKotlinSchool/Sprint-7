@@ -5,7 +5,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "ADDRESSBOOK")
-data class AddressBook(
+data class ADDRESSBOOK(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
