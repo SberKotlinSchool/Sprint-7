@@ -9,7 +9,7 @@ class TransferOptimisticLock(private val connectionManager : ConnectionManager) 
         val autoCommit = conn.autoCommit
         try {
             conn.autoCommit = false
-            checkBalanceInTransaction(sourceAccountId, conn, false)
+            checkBalanceInTransaction(sourceAccountId, amount, conn, false)
             val updatedRowsQnt = transferOptimisticBlockingInTransaction(sourceAccountId, targetAccountId, amount, conn)
             if (updatedRowsQnt != 1) {
                 throw SQLException("Данные были изменены другой транзакцией!")

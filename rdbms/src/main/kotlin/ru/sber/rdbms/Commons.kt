@@ -37,7 +37,7 @@ fun transferInTransaction(sourceAccountId : Long, targetAccountId : Long, amount
     }
 }
 
-fun checkBalanceInTransaction(id: Long, conn: Connection, withBlocking : Boolean) {
+fun checkBalanceInTransaction(id: Long, amount: Int, conn: Connection, withBlocking : Boolean) {
     val statement = if (withBlocking) {
         "select * from accounts.account where id = $id for update"
     } else {
@@ -48,9 +48,21 @@ fun checkBalanceInTransaction(id: Long, conn: Connection, withBlocking : Boolean
         val resultSet = statement.executeQuery()
         resultSet.use {
             it.next()
-            if (it.getInt("amount") <= 0) {
+            if (it.getInt("amount") - amount <= 0) {
                 throw SQLException("Перевод невозможен! Сумма списания больше остатка на счете!")
             }
+        }
+    }
+}
+
+fun blockingTargetAccount(id: Long, conn: Connection) {
+    val statement = "select * from accounts.account where id = $id for update"
+    val preparedStatement = conn.prepareStatement(statement)
+    preparedStatement.use { statement ->
+        val resultSet = statement.executeQuery()
+        resultSet.use {
+            it.next()
+            println("Target account $id blocking before the transfer")
         }
     }
 }

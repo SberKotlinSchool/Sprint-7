@@ -9,7 +9,8 @@ class TransferPessimisticLock(private val connectionManager : ConnectionManager)
         val autoCommit = conn.autoCommit
         try {
             conn.autoCommit = false
-            checkBalanceInTransaction(sourceAccountId, conn, true)
+            checkBalanceInTransaction(sourceAccountId, amount, conn, true)
+            blockingTargetAccount(targetAccountId, conn)
             transferInTransaction(sourceAccountId, targetAccountId, amount, conn)
             conn.commit()
         } catch (exception: SQLException) {
