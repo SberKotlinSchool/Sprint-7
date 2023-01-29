@@ -1,0 +1,22 @@
+server:
+  port: 8200
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/kotlin
+    username: postgres #@db.user@
+    password: root #@db.pass@
+    driver-class-name: org.postgresql.Driver
+
+    hikari:
+      max-lifetime: 2000000
+      maximum-pool-size: 10
+      idle-timeout: 600000
+      minimum-idle: 1
+      schema: orm
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
