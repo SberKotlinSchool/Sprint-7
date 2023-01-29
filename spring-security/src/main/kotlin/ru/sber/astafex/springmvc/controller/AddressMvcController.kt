@@ -1,5 +1,9 @@
 package ru.sber.astafex.springmvc.controller
 
+import org.springframework.security.access.annotation.Secured
+import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
+import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
@@ -28,12 +32,14 @@ class AddressMvcController(private val service: AddressService) {
         return "edit"
     }
 
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("/{id}/edit")
     fun editAddress(@PathVariable id: Long, @ModelAttribute address: Address, model: Model): String {
         service.edit(id, address)
         return "redirect:/app/list"
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/{id}/delete")
     fun deleteAddress(@PathVariable id: Long): String {
         service.delete(id)
@@ -46,6 +52,7 @@ class AddressMvcController(private val service: AddressService) {
         return "add"
     }
 
+    @PreAuthorize("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
     @PostMapping("/add")
     fun addNewAddress(@ModelAttribute address: Address): String {
         service.add(address)

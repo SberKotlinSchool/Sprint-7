@@ -7,8 +7,8 @@ import javax.persistence.*
 data class Address(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    var id: Long,
-    var name: String,
-    var city: String,
-    var phone: String
+    var id: Long? = null,
+    var name: String? = null,
+    var city: String? = null,
+    var phone: String? = null
 )
