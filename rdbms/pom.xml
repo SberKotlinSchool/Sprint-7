@@ -41,7 +41,7 @@
         </dependency>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-test</artifactId>
+            <artifactId>kotlin-test-junit</artifactId>
             <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
@@ -57,6 +57,18 @@
             <artifactId>junit-jupiter-engine</artifactId>
             <version>${junit.jupiter.version}</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>RELEASE</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 
@@ -104,7 +116,8 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>4.5.0</version>
                 <configuration>
-                    <changeLogFile>db.changelog-master.yaml</changeLogFile>
+                    <changeLogFile>${basedir}/src/main/resources/db.changelog-master.yaml</changeLogFile>
+                    <changeLogDirectory>${basedir}/src/main/resources/</changeLogDirectory>
                     <url>jdbc:postgresql://localhost:5432/db</url>
                     <username>postgres</username>
                     <password>postgres</password>

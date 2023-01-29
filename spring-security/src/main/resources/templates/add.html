@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+  <title>Add address</title>
+</head>
+<body>
+  <form method="post" th:action="@{/app/add}" th:object="${row}">
+    <p>Name:<label>
+      <input type="text" th:field="${row.name}" placeholder="Enter name"/>
+    </label></p>
+    <p>Phone:<label>
+      <input type="text" th:field="${row.phone}" placeholder="Enter phone"/>
+    </label></p>
+    <p>Description:<label>
+      <input type="text" th:field="${row.descr}" placeholder="Enter description"/>
+    </label></p>
+    <p><input type="submit" value="Submit"/>
+  </form>
+  <input type="reset" value="Reset"/>
+  <p><a th:href="@{/app/list}">back</a></p>
+</body>
+</html>
