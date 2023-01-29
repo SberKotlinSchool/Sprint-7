@@ -1,29 +1,10 @@
 package ru.sber.astafex.springmvc.repository
 
-import org.springframework.stereotype.Component
-import ru.sber.astafex.springmvc.model.Address
-import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicInteger
+import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.stereotype.Repository
+import ru.sber.astafex.springmvc.entity.Address
 
-@Component
-class AddressRepository {
-    private val countId = AtomicInteger(0)
-    private val addresses = ConcurrentHashMap<Int, Address>()
-
-    fun getList() = addresses.values.toList()
-
-    fun get(id: Int) = addresses[id]
-
-    fun add(address: Address) {
-        val id = countId.incrementAndGet()
-        addresses.putIfAbsent(id, address.apply { this.id = id })
-    }
-
-    fun edit(id: Int, address: Address) {
-        addresses[id] = address.apply { this.id = id }
-    }
-
-    fun delete(id: Int) {
-        addresses.remove(id)
-    }
+@Repository
+interface AddressRepository : JpaRepository<Address, Long> {
+    fun findAddressByCity(city: String) : List<Address>
 }

@@ -1,9 +1,9 @@
-package ru.sber.springmvc.controller
+package ru.sber.astafex.springmvc.controller
 
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
-import ru.sber.astafex.springmvc.model.Address
+import ru.sber.astafex.springmvc.entity.Address
 import ru.sber.astafex.springmvc.service.AddressService
 
 @Controller
@@ -12,30 +12,30 @@ class AddressMvcController(private val service: AddressService) {
 
     @GetMapping("/list")
     fun getAddressList(@RequestParam(required = false) query: String?, model: Model): String {
-        model.addAttribute("addressList", service.getList(query))
+        model.addAttribute("addressList", service.getAddresses(query))
         return "list"
     }
 
     @GetMapping("/{id}/view")
-    fun viewAddress(@PathVariable id: Int, model: Model): String {
+    fun viewAddress(@PathVariable id: Long, model: Model): String {
         model.addAttribute("address", service.get(id))
         return "view"
     }
 
     @GetMapping("/{id}/edit")
-    fun getFormEditAddress(@PathVariable id: Int, model: Model): String {
+    fun getFormEditAddress(@PathVariable id: Long, model: Model): String {
         model.addAttribute("address", service.get(id))
         return "edit"
     }
 
     @PostMapping("/{id}/edit")
-    fun editAddress(@PathVariable id: Int, @ModelAttribute address: Address, model: Model): String {
+    fun editAddress(@PathVariable id: Long, @ModelAttribute address: Address, model: Model): String {
         service.edit(id, address)
         return "redirect:/app/list"
     }
 
     @PostMapping("/{id}/delete")
-    fun deleteAddress(@PathVariable id: Int): String {
+    fun deleteAddress(@PathVariable id: Long): String {
         service.delete(id)
         return "redirect:/app/list"
     }
