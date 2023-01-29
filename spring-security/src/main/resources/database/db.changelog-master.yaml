@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: database/init_users.sql
+  - include:
+      file: database/init_roles.sql
+  - include:
+      file: database/init_users_roles.sql
