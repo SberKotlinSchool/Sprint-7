@@ -8,7 +8,7 @@ class TransferPessimisticLock {
         connection { conn ->
             var acc1Amount = getAccountInfo(conn, accountId1)
             acc1Amount -= amount
-            var acc2Amount = getAccountInfo(conn, accountId1)
+            var acc2Amount = getAccountInfo(conn, accountId2)
             acc2Amount += amount
             if (acc1Amount < 0) {
                 throw IllegalStateException("Недостаточно средства на счете списания")

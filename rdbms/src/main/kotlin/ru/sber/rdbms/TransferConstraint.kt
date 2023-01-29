@@ -13,7 +13,7 @@ class TransferConstraint {
             }
             conn.execUpdate(updateSql) { ps ->
                 ps.setLong(1, amount)
-                ps.setLong(2, accountId1)
+                ps.setLong(2, accountId2)
             }
         }
     }
