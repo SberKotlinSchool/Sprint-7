@@ -1,5 +1,6 @@
 package ru.sber.astafex.springmvc.controller
 
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import ru.sber.astafex.springmvc.entity.Address
 import ru.sber.astafex.springmvc.service.AddressService
@@ -12,6 +13,7 @@ class AddressRestController(private val service: AddressService) {
         return service.getAddresses(query)
     }
 
+    @PreAuthorize("hasRole('API') or hasRole('ADMIN')")
     @PostMapping
     fun addNewAddress(@RequestBody address: Address) {
         service.add(address)
@@ -27,6 +29,7 @@ class AddressRestController(private val service: AddressService) {
         service.edit(id, address)
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     fun deleteAddress(@PathVariable id: Long) {
         service.delete(id)

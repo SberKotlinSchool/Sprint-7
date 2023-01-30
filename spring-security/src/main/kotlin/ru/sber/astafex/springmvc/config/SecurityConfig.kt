@@ -19,18 +19,16 @@ class SecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity?) {
         http {
             authorizeRequests {
-                authorize("/rest/**", "hasRole('ROLE_ADMIN') or hasRole('ROLE_API')")
-                authorize("/app/**", "hasRole('ROLE_ADMIN') or hasRole('ROLE_USER')")
+                authorize("/rest/**", "hasRole('ADMIN') or hasRole('API')")
+                authorize("/app/**", "hasRole('ADMIN') or hasRole('USER')")
                 authorize("/**", authenticated)
             }
 
             formLogin { permitAll() }
 
-            csrf { ignoringAntMatchers("/h2-console/*") }
+            csrf { disable() }
 
-            headers {
-                frameOptions { sameOrigin = true }
-            }
+            headers { frameOptions { sameOrigin = true } }
         }
     }
 
