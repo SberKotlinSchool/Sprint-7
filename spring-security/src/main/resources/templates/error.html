@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<h1>Ошибка:</h1>
+<table>
+    <tr>
+        <td>Дата и время ошибки</td>
+        <td th:text="${timestamp}"/>
+    </tr>
+    <tr>
+        <td>Путь</td>
+        <td th:text="${path}"/>
+    </tr>
+    <tr>
+        <td>Ошибка</td>
+        <td th:text="${error}"/>
+    </tr>
+    <tr>
+        <td>Статус</td>
+        <td th:text="${status}"/>
+    </tr>
+    <tr>
+        <td>Сообщение</td>
+        <td th:text="${message}"/>
+    </tr>
+
+</table>
+<div class="row">
+    <form id="list" th:action="@{/app/list}" action="list.html">
+        <button type="submit">Вернуться к адресной книге</button>
+    </form>
+</div>
+</body>
+</html>
