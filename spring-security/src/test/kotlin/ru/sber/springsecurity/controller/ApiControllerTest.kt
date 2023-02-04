@@ -16,10 +16,12 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.test.annotation.DirtiesContext
 import ru.sber.springsecurity.model.AddressBookRow
 import ru.sber.springsecurity.service.AddressBookService
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 internal class ApiControllerTest {
     companion object {
         @JvmStatic
