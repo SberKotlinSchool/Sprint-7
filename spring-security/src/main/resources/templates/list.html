@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<h2>Книга учета работников</h2>
+<div>
+    <table border="1">
+        <tr>
+            <th>ID</th>
+            <th>ФИО</th>
+            <th>Почтовый адрес</th>
+            <th>Номер телефона</th>
+            <th>Адрес электронной почты</th>
+        </tr>
+        <tr th:each="employee : ${employees}">
+            <td th:text="${employee.id}"></td>
+            <td th:text="${employee.fullName}"></td>
+            <td th:text="${employee.address}"></td>
+            <td th:text="${employee.phone}"></td>
+            <td th:text="${employee.email}"></td>
+            <td>
+                <a th:href="@{/app/{id}/view(id=${employee.id})}">Просмотр</a>
+            </td>
+            <td>
+                <a th:href="@{/app/{id}/edit(id=${employee.id})}">Редактирование</a>
+            </td>
+            <td sec:authorize="hasAnyRole('ADMIN')">
+                <a th:href="@{/app/{id}/delete(id=${employee.id})}">Удалить</a>
+            </td>
+        </tr>
+    </table>
+</div>
+<div sec:authorize="hasAnyRole('ADMIN','WRITE')">
+    <form method="get" th:action="@{/app/add}">
+        <p>
+            <button>Добавить запись</button>
+        </p>
+    </form>
+</div>
+</body>
+</html>
