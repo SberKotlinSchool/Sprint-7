@@ -17,6 +17,9 @@ class Book(
     var publish: Publish,
 
     @ManyToMany(cascade = [CascadeType.ALL], fetch = FetchType.EAGER)
+    @JoinTable(
+        name = "book_author"
+    )
     var authot: MutableList<Author>? = null,
 ) {
     override fun toString(): String {

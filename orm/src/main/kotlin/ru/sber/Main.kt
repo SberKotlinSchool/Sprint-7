@@ -5,12 +5,12 @@ import org.hibernate.cfg.Configuration
 import ru.sber.enteties.Author
 import ru.sber.enteties.Book
 import ru.sber.enteties.BookCategory
-import ru.sber.enteties.PublishingHouse
+import ru.sber.enteties.Publish
 
 fun main() {
     val sessionFactory = Configuration().configure()
         .addAnnotatedClass(Book::class.java)
-        .addAnnotatedClass(PublishingHouse::class.java)
+        .addAnnotatedClass(Publish::class.java)
         .addAnnotatedClass(Author::class.java)
         .buildSessionFactory()
 
@@ -19,8 +19,8 @@ fun main() {
 
         val book1 = Book(
             name = "Сказки",
-            categoty = BookCategory.Story,
-            publishingHouse = PublishingHouse(name = "издательство сказок"),
+            category = BookCategory.Story,
+            publish = Publish(name = "издательство сказок"),
             authot = mutableListOf(
                 Author(firstName = "Александр", lastName = "Пушкин"),
                 Author(firstName = "Корней", lastName = "Чуйковский")
@@ -30,8 +30,8 @@ fun main() {
 
         val book2 = Book(
             name = "Евгений Онегин",
-            categoty = BookCategory.School,
-            publishingHouse = PublishingHouse(name = "издательство School"),
+            category = BookCategory.School,
+            publish = Publish(name = "издательство School"),
             authot = mutableListOf(
                 Author(firstName = "Александр", lastName = "Пушкин")
             )
@@ -40,8 +40,8 @@ fun main() {
 
         val book3 = Book(
             name = "Война и мир",
-            categoty = BookCategory.School,
-            publishingHouse = PublishingHouse(name = "издательство School"),
+            category = BookCategory.School,
+            publish = Publish(name = "издательство School"),
             authot = mutableListOf(
                 Author(firstName = "Лев", lastName = "Толстой")
             )
@@ -57,7 +57,7 @@ fun main() {
 
         dao.delete(book2.id)
 
-        book3.categoty = BookCategory.Detectives
+        book3.category = BookCategory.Detectives
         dao.update(book3)
 
         foundList = dao.find(BookCategory.School)
@@ -92,11 +92,11 @@ class BookDAO(private val sessionFactory: SessionFactory) {
         return result
     }
 
-    fun find(categoty: BookCategory): List<Book>? {
+    fun find(category: BookCategory): List<Book>? {
         val result: MutableList<Book>?
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            result = session.createQuery("from Book where categoty = :categoty").setParameter("categoty", categoty)
+            result = session.createQuery("from Book where category = :category").setParameter("category", category)
                 .list() as MutableList<Book>?
             session.transaction.commit()
         }
