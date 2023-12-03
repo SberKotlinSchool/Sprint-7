@@ -1,3 +1,7 @@
 package com.example.demo.persistance
 
-interface EntityRepository
+import org.springframework.data.jpa.repository.JpaRepository
+
+interface EntityRepository : JpaRepository<Entity, Long> {
+
+}
