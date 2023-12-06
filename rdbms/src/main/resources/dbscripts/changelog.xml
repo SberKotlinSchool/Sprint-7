@@ -1,0 +1,17 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd"
+                   logicalFilePath="changelog.xml">
+
+    <changeSet author="RSKrasnenkov" id="changeset-1">
+        <comment>Создание таблицы счетов</comment>
+        <sqlFile path="create_account.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet author="RSKrasnenkov" id="changeset-2">
+        <comment>Создание индекса</comment>
+        <sqlFile path="create_index.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+</databaseChangeLog>
