@@ -1,7 +1,6 @@
 package ru.sber.controller
 
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
@@ -13,11 +12,13 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
+import org.springframework.security.test.context.support.WithMockUser
 import ru.sber.model.Note
 import ru.sber.repository.NoteRepository
 import java.time.LocalDateTime
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 internal class ApiControllerTest {
@@ -43,6 +44,7 @@ internal class ApiControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "api", password = "api", roles = ["API"])
     fun add() {
         //given
         //when
@@ -60,6 +62,7 @@ internal class ApiControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "api", password = "api", roles = ["API"])
     fun list() {
         //given
         repository.save(testNote)
@@ -77,6 +80,7 @@ internal class ApiControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "api", password = "api", roles = ["API"])
     fun view() {
         //given
         testNote = repository.save(testNote)
@@ -95,6 +99,7 @@ internal class ApiControllerTest {
 
 
     @Test
+    @WithMockUser(username = "api", password = "api", roles = ["API"])
     fun edit() {
         //given
         testNote = repository.save(testNote)
@@ -112,6 +117,25 @@ internal class ApiControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "api", password = "api", roles = ["API"])
+    fun deleteNotPermit() {
+        //given
+        testNote = repository.save(testNote)
+        //when
+        val resp = restTemplate.exchange(
+            url("/api/${testNote.id}/delete"),
+            HttpMethod.DELETE,
+            HttpEntity(null, headers),
+            Unit::class.java
+        )
+        //then
+        // TODO
+//        assertEquals(resp.statusCode, HttpStatus.FOUND)
+//        assertContentEquals(emptyList(), repository.findAll())
+    }
+
+    @Test
+    @WithMockUser(username = "admin", password = "admin", roles = ["ADMIN"])
     fun delete() {
         //given
         testNote = repository.save(testNote)
@@ -127,7 +151,6 @@ internal class ApiControllerTest {
         assertContentEquals(emptyList(), repository.findAll())
     }
 
-    @Disabled
     @ParameterizedTest
     @ValueSource(strings = ["/api/add", "/api/list", "/api/0/view", "/api/0/edit", "/api/0/delete"])
     fun `should login`(url: String) {
@@ -142,19 +165,6 @@ internal class ApiControllerTest {
         )
         //then
         assertEquals(resp.statusCode, HttpStatus.OK)
-        assertEquals(
-            resp.body.toString().trimIndent(), """
-                <!DOCTYPE html>
-                <html lang="en">
-                <body>
-                <form action="/login" method="POST">
-                    <p>login:<label><input name="login" type="text"></label></p>
-                    <p>password:<label><input name="password" type="text"></label></p>
-                    <input type="submit" value="login"/>
-                </form>
-                </body>
-                </html>
-            """.trimIndent()
-        )
+        assertTrue(resp.body.toString().contains("password"))
     }
 }

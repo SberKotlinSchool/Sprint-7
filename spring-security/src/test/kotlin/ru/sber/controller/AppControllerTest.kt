@@ -1,13 +1,13 @@
 package ru.sber.controller
 
 import org.junit.jupiter.api.BeforeEach
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -15,6 +15,7 @@ import ru.sber.model.Note
 import ru.sber.repository.NoteRepository
 import java.time.LocalDateTime
 import javax.servlet.http.Cookie
+import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
 
 @SpringBootTest
@@ -37,7 +38,6 @@ internal class AppControllerTest {
         repository.deleteAll()
     }
 
-    @Disabled
     @ParameterizedTest
     @ValueSource(strings = ["/app/add", "/app/list", "/app/0/view", "/app/0/edit", "/app/0/delete"])
     fun `should login`(url: String) {
@@ -56,6 +56,7 @@ internal class AppControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", password = "admin", roles = ["ADMIN"])
     fun add() {
         //given
         //when
@@ -74,6 +75,7 @@ internal class AppControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user", password = "user", roles = ["USER"])
     fun list() {
         //given
         repository.save(testNote)
@@ -90,6 +92,7 @@ internal class AppControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user", password = "user", roles = ["USER"])
     fun view() {
         //given
         repository.save(testNote)
@@ -106,6 +109,7 @@ internal class AppControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user", password = "user", roles = ["USER"])
     fun edit() {
         //given
         repository.save(testNote)
@@ -126,6 +130,27 @@ internal class AppControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "user", password = "user", roles = ["USER"])
+    fun deleteNotPermit() {
+        //given
+        testNote = repository.save(testNote)
+        testNote2 = repository.save(testNote2)
+        //when
+        mockMvc.perform(
+            MockMvcRequestBuilders
+                .delete("/app/${testNote.id}/delete")
+                .cookie(cookie)
+        )
+            //then
+            .andExpect {
+                MockMvcResultMatchers.status().`is`(403)
+                MockMvcResultMatchers.redirectedUrl("/login")
+            }
+        assertContentEquals(repository.findAll(), listOf(testNote, testNote2))
+    }
+
+    @Test
+    @WithMockUser(username = "admin", password = "admin", roles = ["ADMIN"])
     fun delete() {
         //given
         testNote = repository.save(testNote)

@@ -1,6 +1,7 @@
 package ru.sber.controller
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
@@ -59,6 +60,7 @@ class AppController(@Autowired val noteRepository: NoteRepository) {
         return "redirect:/app/$id/view"
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/delete")
     fun delete(@PathVariable id: Long, model: Model): String {
         noteRepository.deleteById(id)

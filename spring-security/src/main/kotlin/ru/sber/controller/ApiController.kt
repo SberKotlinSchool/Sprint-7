@@ -1,6 +1,7 @@
 package ru.sber.controller
 
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import ru.sber.model.Note
 import ru.sber.repository.NoteRepository
@@ -33,6 +34,7 @@ class ApiController(@Autowired val noteRepository: NoteRepository) {
         noteRepository.save(note)
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}/delete")
     fun delete(@PathVariable id: Long) {
         noteRepository.deleteById(id)
