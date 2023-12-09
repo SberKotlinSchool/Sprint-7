@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"/>
+  <meta charset="UTF-8">
+  <title>Address book</title>
+</head>
+<body>
+<div class="container">
+  <h3>Menu</h3><br/>
+  <form class="form-inline center-pill">
+    <a sec:authorize="hasAnyRole('APP','ADMIN')" class="btn btn-default" href="#" th:href="@{/app/list}">App</a>
+    <a sec:authorize="hasAnyRole('API','ADMIN')" class="btn btn-default" href="#" th:href="@{/api/list}">Api</a>
+    <a sec:authorize="hasRole('ADMIN')" class="btn btn-default" href="#" th:href="@{/h2/console}">H2 Console</a>
+    <a class="btn btn-info" href="#" th:href="@{/logout}">Logout</a>
+  </form>
+</div>
+</body>
+</html>
