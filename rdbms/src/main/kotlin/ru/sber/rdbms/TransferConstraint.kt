@@ -11,13 +11,14 @@ class TransferConstraint {
     )
 
     private val queryUpdate = "UPDATE account1 SET amount = amount - ? WHERE id = ?;" +
-            "UODATE account1 SET amount = amount + ? WHERE id = ?;"
+            "UPDATE account1 SET amount = amount + ? WHERE id = ?;"
 
     fun transfer(accountId1: Long, accountId2: Long, amount: Long) {
 
         connection.use { conn ->
             val autoCommit = conn.autoCommit
             try {
+                conn.autoCommit = false
                 val prepareStatement = conn.prepareStatement(queryUpdate)
                 prepareStatement.use { statement ->
 
