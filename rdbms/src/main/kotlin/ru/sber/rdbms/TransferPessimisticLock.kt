@@ -7,11 +7,7 @@ class TransferPessimisticLock(private val connection: Connection) {
 
     /**
      * Функция перевода денег с одного счета на другой.
-     * Через пессимистичные блокировки. Как возможен deadlock ? Учесть его в решении
-     *
-     * Deadlock возможен, если происходит одновременно два процесса перевода с кошелька1 на кошелек2 и наоборот с 2 на 1.
-     * Тогда могут быть заблокированы обе записи в account для обновления.
-     * Решение - выполнять select for update сразу для двух кошельков
+     * Через пессимистичные блокировки.
      */
     fun transfer(accountId1: Long, accountId2: Long, amount: Long) {
         connection.use { conn ->
@@ -22,11 +18,22 @@ class TransferPessimisticLock(private val connection: Connection) {
                 val accountPair = getAccountForUpdate(accountId1, accountId2, conn)
                 if (accountPair.first.amount < amount) throw NotEnoughMoneyException()
 
-                updateAccount(accountPair.first, "- $amount", conn)
-                updateAccount(accountPair.second, "+ $amount", conn)
+                val prepareStatementUpdate =
+                        conn.prepareStatement("update account set amount = amount + ? where id = ?")
+                prepareStatementUpdate.use { statement ->
+                    statement.setLong(1, -1 * amount)
+                    statement.setLong(2, accountPair.first.id)
+                    statement.addBatch()
+
+                    statement.setLong(1, amount)
+                    statement.setLong(2, accountPair.second.id)
+                    statement.addBatch()
+
+                    statement.executeBatch()
+                }
 
                 conn.commit()
-                println("TransferOptimisticLock: successfully transfered amount $amount from $accountId1 to $accountId2")
+                println("TransferPessimisticLock: successfully transfered amount $amount from $accountId1 to $accountId2")
             } catch (exception: SQLException) {
                 println(exception.message)
                 exception.printStackTrace()
@@ -65,13 +72,4 @@ class TransferPessimisticLock(private val connection: Connection) {
         }
     }
 
-    private fun updateAccount(account: AccountEntity, amountOperation: String, conn: Connection) {
-        val prepareStatementUpdate1 =
-                conn.prepareStatement("update account set amount = amount $amountOperation where id = ?")
-        prepareStatementUpdate1.use { statement ->
-            statement.setLong(1, account.id)
-
-            statement.executeUpdate()
-        }
-    }
 }

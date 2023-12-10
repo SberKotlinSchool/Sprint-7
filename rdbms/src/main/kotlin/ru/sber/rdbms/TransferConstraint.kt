@@ -18,12 +18,18 @@ class TransferConstraint(
                 conn.autoCommit = false
                 val statement = conn.prepareStatement(
                         """
-                        update account set amount = amount - $amount where id = $accountId1;
-                        update account set amount = amount + $amount where id = $accountId2;
+                        update account set amount = amount - ? where id = ?;
+                        update account set amount = amount + ? where id = ?;
                     """.trimIndent()
                 )
+                statement.setLong(1, amount)
+                statement.setLong(2, accountId1)
+                statement.setLong(3, amount)
+                statement.setLong(4, accountId2)
+
                 statement.executeUpdate()
                 conn.commit()
+
 
                 println("TransferConstraint: successfully transfered amount $amount from $accountId1 to $accountId2")
             } catch (e: SQLException) {

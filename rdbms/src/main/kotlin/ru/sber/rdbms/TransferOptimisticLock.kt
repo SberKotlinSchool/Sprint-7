@@ -25,10 +25,10 @@ class TransferOptimisticLock(private val connection: Connection) {
                 val account2 = getAccount(accountId2, conn)
 
                 //Уменьшаем сумму на счете 1
-                updateAccount(account1, "- $amount", conn)
+                updateAccount(account1, -1 *  amount, conn)
 
                 //Увеличиваем сумму на счете 2
-                updateAccount(account2, "+ $amount", conn)
+                updateAccount(account2, amount, conn)
 
                 conn.commit()
                 println("TransferOptimisticLock: successfully transfered amount $amount from $accountId1 to $accountId2")
@@ -56,12 +56,13 @@ class TransferOptimisticLock(private val connection: Connection) {
         }
     }
 
-    private fun updateAccount(accountEntity: AccountEntity, amountOperation: String, conn: Connection) {
+    private fun updateAccount(accountEntity: AccountEntity, amountOperation: Long, conn: Connection) {
         val prepareStatementUpdate1 =
-                conn.prepareStatement("update account set amount = amount $amountOperation, version = version + 1 where id = ? and version = ?")
+                conn.prepareStatement("update account set amount = amount + ?, version = version + 1 where id = ? and version = ?")
         prepareStatementUpdate1.use { statement ->
-            statement.setLong(1, accountEntity.id)
-            statement.setInt(2, accountEntity.version)
+            statement.setLong(1, amountOperation)
+            statement.setLong(2, accountEntity.id)
+            statement.setInt(3, accountEntity.version)
 
             val updatedRows = statement.executeUpdate()
             if (updatedRows == 0) throw SQLException("Concurrent update $accountEntity")
