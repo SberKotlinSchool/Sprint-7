@@ -1,5 +1,6 @@
 package ru.sber.rdbms
 
+import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
 
@@ -13,34 +14,15 @@ class TransferPessimisticLock {
 
     fun transfer(accountId1: Long, accountId2: Long, amount: Long) {
         dbConnection.use { connection ->
-            val autoComit = connection.autoCommit
+            val autoCommit = connection.autoCommit
             try {
                 connection.autoCommit = false
-                val statementLock = connection.prepareStatement("select * from account where id in (?, ?) for update")
-                statementLock.use { preparedStatement ->
-                    preparedStatement.setLong(1, accountId1)
-                    preparedStatement.setLong(2, accountId2)
-                    preparedStatement.executeQuery().use {
-                        while (it.next()) {
-                            if (it.getLong("id") == accountId1) {
-                                if (it.getLong("amount") - amount < 0) {
-                                    throw SQLException("Баланс счета не может быть меньше нуля")
-                                }
-                            }
-                        }
-                    }
-                }
-                val statementUpdate = connection.prepareStatement("update account set amount = amount + ? where id = ?")
-                statementUpdate.use { preparedStatement ->
-                    preparedStatement.setLong(1, -amount)
-                    preparedStatement.setLong(2, accountId1)
-                    preparedStatement.addBatch()
-
-                    preparedStatement.setLong(1, amount)
-                    preparedStatement.setLong(2, accountId2)
-                    preparedStatement.addBatch()
-
-                    preparedStatement.executeBatch()
+                if (accountId1 < accountId2) {
+                    getTransfer(connection, accountId1, -amount)
+                    getTransfer(connection, accountId2, amount)
+                } else {
+                    getTransfer(connection, accountId2, amount)
+                    getTransfer(connection, accountId1, -amount)
                 }
                 connection.commit()
             } catch (exception: SQLException) {
@@ -48,8 +30,29 @@ class TransferPessimisticLock {
                 exception.printStackTrace()
                 connection.rollback()
             } finally {
-                connection.autoCommit = autoComit
+                connection.autoCommit = autoCommit
             }
+        }
+    }
+
+    private fun getTransfer(connection: Connection, accountId: Long, amount: Long) {
+        var currentAmount: Long
+        val statementLock = connection.prepareStatement("select * from account where id = ? for update")
+        statementLock.use { preparedStatement ->
+            preparedStatement.setLong(1, accountId)
+            preparedStatement.executeQuery().use {
+                it.next()
+                currentAmount = it.getLong("amount")
+            }
+        }
+        if (currentAmount + amount < 0) throw SQLException("Баланс счета не может быть меньше нуля")
+
+        val statementUpdate = connection.prepareStatement("update account set amount = ? where id = ?")
+        statementUpdate.use { preparedStatement ->
+            preparedStatement.setLong(1, currentAmount + amount)
+            preparedStatement.setLong(2, accountId)
+
+            preparedStatement.executeUpdate()
         }
     }
 }

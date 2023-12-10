@@ -52,7 +52,7 @@ class TransferOptimisticLock {
                     statement.addBatch()
 
                     val executeBatch = statement.executeBatch()
-                    if (executeBatch.isEmpty()) {
+                    if (executeBatch.size < 2) {
                         throw SQLException("Ошибка обновления")
                     }
                 }
