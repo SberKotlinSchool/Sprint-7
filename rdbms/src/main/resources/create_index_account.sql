@@ -2,4 +2,4 @@
 
 --changeset sashamsheev:index
 
-create index amount_idx ON account (amount);
+create index amount_idx ON account (id);

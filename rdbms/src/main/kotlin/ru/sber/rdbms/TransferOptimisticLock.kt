@@ -6,7 +6,7 @@ import java.sql.SQLException
 
 private const val UPDATE_SQL = """
             update account
-            set amount  = amount - ?,
+            set amount  = amount + ?,
                 version = version + 1
             where id = ?
               and version = ?;
@@ -30,11 +30,11 @@ class TransferOptimisticLock {
             try {
                 conn.autoCommit = false
 
-                val version1 = getVersionAndValidate(conn, accountId1, amount)
-                val version2 = getVersionAndValidate(conn, accountId2, -amount)
+                val version1 = getVersionAndValidate(conn, accountId1, -amount)
+                val version2 = getVersionAndValidate(conn, accountId2, amount)
 
-                updateAccountAmount(conn, amount, accountId1, version1)
-                updateAccountAmount(conn, -amount, accountId2, version2)
+                updateAccountAmount(conn, -amount, accountId1, version1)
+                updateAccountAmount(conn, amount, accountId2, version2)
 
                 conn.commit()
                 println("transfer $amount from $accountId1 to $accountId2")
@@ -75,7 +75,7 @@ class TransferOptimisticLock {
             statement.setLong(1, accountId)
             statement.executeQuery().use {
                 it.next()
-                if (it.getLong("amount") < amount) {
+                if (amount < 0 && it.getLong("amount") + amount < 0) {
                     throw TransferExceptions("not enough funds $amount in the account $accountId")
                 }
                 return it.getInt("version")

@@ -13,7 +13,7 @@ private const val BLOCK_SQL = """
 
 private const val UPDATE_SQL = """
             update account 
-            set amount = amount - ? 
+            set amount = amount + ? 
             where id = ?
         """
 
@@ -30,15 +30,15 @@ class TransferPessimisticLock {
                 conn.autoCommit = false
 
                 if (accountId1 < accountId2) {
-                    blockAccountAndValidate(conn, accountId1, amount)
-                    blockAccountAndValidate(conn, accountId2, -amount)
+                    blockAccountAndValidate(conn, accountId1, -amount)
+                    blockAccountAndValidate(conn, accountId2, amount)
                 } else {
-                    blockAccountAndValidate(conn, accountId2, -amount)
-                    blockAccountAndValidate(conn, accountId1, amount)
+                    blockAccountAndValidate(conn, accountId2, amount)
+                    blockAccountAndValidate(conn, accountId1, -amount)
                 }
 
-                updateAccountAmount(conn, amount, accountId1)
-                updateAccountAmount(conn, -amount, accountId2)
+                updateAccountAmount(conn, -amount, accountId1)
+                updateAccountAmount(conn, amount, accountId2)
 
                 conn.commit()
                 println("transfer $amount from $accountId1 to $accountId2")
@@ -62,7 +62,7 @@ class TransferPessimisticLock {
             statement.setLong(1, accountId)
             statement.executeQuery().use {
                 it.next()
-                if (it.getLong("amount") < amount) {
+                if (amount < 0 && it.getLong("amount") + amount < 0) {
                     throw TransferExceptions("not enough funds $amount in the account $accountId")
                 }
             }
