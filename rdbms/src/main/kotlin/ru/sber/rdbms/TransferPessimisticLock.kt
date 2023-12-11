@@ -17,8 +17,8 @@ class TransferPessimisticLock {
             val autoCommit = conn.autoCommit
             try {
                 conn.autoCommit = false
-                val prepareStatementSelectForUpdate1 = conn.prepareStatement(querySelectForUpdate)
-                prepareStatementSelectForUpdate1.use { statement ->
+                val prepareStatementSelectForUpdate = conn.prepareStatement(querySelectForUpdate)
+                prepareStatementSelectForUpdate.use { statement ->
                     statement.setLong(1, accountId1)
 
                     statement.executeQuery().use {
@@ -26,26 +26,18 @@ class TransferPessimisticLock {
                         val actualAmount = it.getLong("amount")
                         if (amount > actualAmount) throw SQLException("Не хватает денег на счете $accountId1")
                     }
-                }
-                val prepareStatementSelectForUpdate2 = conn.prepareStatement(querySelectForUpdate)
-                prepareStatementSelectForUpdate2.use { statement ->
                     statement.setLong(1, accountId2)
                     statement.executeQuery()
                 }
 
-                val prepareStatementUpdateAccount1 =
-                        conn.prepareStatement("UPDATE account1 SET amount = amount - ? WHERE id = ?")
-                prepareStatementUpdateAccount1.use { statement ->
+                val prepareStatementUpdate =
+                        conn.prepareStatement("UPDATE account1 SET amount = amount - ? WHERE id = ?;" +
+                                "UPDATE account1 SET amount = amount + ? WHERE id = ?")
+                prepareStatementUpdate.use { statement ->
                     statement.setLong(1, amount)
                     statement.setLong(2, accountId1)
-
-                    statement.executeUpdate()
-                }
-                val prepareStatementUpdateAccount2 =
-                        conn.prepareStatement("UPDATE account1 SET amount = amount + ? WHERE id = ?")
-                prepareStatementUpdateAccount2.use { statement ->
-                    statement.setLong(1, amount)
-                    statement.setLong(2, accountId2)
+                    statement.setLong(3, amount)
+                    statement.setLong(4, accountId2)
 
                     statement.executeUpdate()
                 }
