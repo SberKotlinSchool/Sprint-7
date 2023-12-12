@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.firebat</groupId>
-	<artifactId>hibernateapp</artifactId>
+	<artifactId>hibernateappspring</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>hibernateapp</name>
+	<name>hibernateappspring</name>
 	<description>Hibernate app for Sprint 7</description>
 	<properties>
 		<java.version>1.8</java.version>
