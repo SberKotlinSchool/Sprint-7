@@ -21,7 +21,6 @@ fun main() {
         .addAnnotatedClass(Student::class.java)
         .buildSessionFactory()
 
-
     sessionFactory.use { sessionFactory ->
         val principalDao = PrincipalDao(sessionFactory)
         val principal1 = Principal(
