@@ -2,11 +2,12 @@
 
 --changeset rrmasgutov:init
 
-create table account1
+CREATE TABLE account1
 (
-    id bigserial constraint account_pk primary key,
-    amount int,
-    version int
+    id      bigserial
+        CONSTRAINT account_pk PRIMARY KEY,
+    amount  INT,
+    version INT
 );
 
 

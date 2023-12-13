@@ -1,5 +1,9 @@
 databaseChangeLog:
   - include:
       file: init.sql
-
-
+  - include:
+      file: add_content.sql
+  - include:
+      file: add_index.sql
+  - include:
+      file: add_constraint.sql
