@@ -1,5 +1,6 @@
 package ru.sber.rdbms
 
+import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
 
@@ -14,38 +15,13 @@ class TransferPessimisticLock {
             val autoCommit = conn.autoCommit
             try {
                 conn.autoCommit = false
-                val decStatementSelectForUpdate = conn.prepareStatement("select * from account1 where id = ? for update")
-                decStatementSelectForUpdate.use { statement ->
-                    statement.setLong(1, accountId1)
-                    statement.executeQuery().use { resultSet ->
-                        resultSet.next()
-                        val oldAmount = resultSet.getLong("amount")
-                        if (oldAmount < amount) throw SQLException("Not enough money")
-                    }
+                if (accountId1 < accountId2) {
+                    transferMoney(conn, accountId1, -amount)
+                    transferMoney(conn, accountId2, amount)
+                } else {
+                    transferMoney(conn, accountId2, amount)
+                    transferMoney(conn, accountId1, -amount)
                 }
-                val incStatementSelectForUpdate = conn.prepareStatement("select * from account1 where id = ? for update")
-                incStatementSelectForUpdate.use { statement ->
-                    statement.setLong(1, accountId2)
-                    statement.executeQuery()
-                }
-
-                val decStatementUpdate =
-                    conn.prepareStatement("update account1 set amount = amount - ? where id = ?")
-                decStatementUpdate.use { statement ->
-                    statement.setLong(1, amount)
-                    statement.setLong(2, accountId1)
-
-                    statement.executeUpdate()
-                }
-                val incStatementUpdate =
-                    conn.prepareStatement("update account1 set amount = amount + ? where id = ?")
-                incStatementUpdate.use { statement ->
-                    statement.setLong(1, amount)
-                    statement.setLong(2, accountId2)
-
-                    statement.executeUpdate()
-                }
-
                 conn.commit()
             } catch (exception: SQLException) {
                 println(exception.message)
@@ -54,6 +30,27 @@ class TransferPessimisticLock {
             } finally {
                 conn.autoCommit = autoCommit
             }
+        }
+    }
+
+    private fun transferMoney(connection: Connection, accountId: Long, amount: Long) {
+        var currentAmount: Long
+        val statementSelectForUpdate = connection.prepareStatement("select * from account where id = ? for update")
+        statementSelectForUpdate.use { preparedStatement ->
+            preparedStatement.setLong(1, accountId)
+            preparedStatement.executeQuery().use {
+                it.next()
+                currentAmount = it.getLong("amount")
+            }
+        }
+        if (currentAmount + amount < 0) throw SQLException("Not enough money")
+
+        val statementUpdate = connection.prepareStatement("update account set amount = ? where id = ?")
+        statementUpdate.use { preparedStatement ->
+            preparedStatement.setLong(1, currentAmount + amount)
+            preparedStatement.setLong(2, accountId)
+
+            preparedStatement.executeUpdate()
         }
     }
 }
