@@ -1,0 +1,14 @@
+<changeSet id="1" author="author">
+    <createTable tableName="accounts">
+        <column name="id" type="bigint" autoIncrement="true">
+            <constraints primaryKey="true" nullable="false"/>
+        </column>
+        <column name="balance" type="decimal(10,2)" defaultValue="0.00">
+            <constraints nullable="false" checkConstraint="balance >= 0"/>
+        </column>
+    </createTable>
+
+    <createIndex tableName="accounts" indexName="idx_accounts_id">
+        <column name="id"/>
+    </createIndex>
+</changeSet>
