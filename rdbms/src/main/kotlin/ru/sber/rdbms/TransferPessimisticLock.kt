@@ -27,18 +27,18 @@ class TransferPessimisticLock {
                     }
                 }
 
+                val prepareStatement3 = conn.prepareStatement("select * from account1 where id = ? for update")
+                prepareStatement3.use { statement ->
+                    statement.setLong(1, accountId2)
+                    statement.executeQuery()
+                }
+
                 val prepareStatement2 = conn.prepareStatement("update account1 set amount = amount - ? where id = ?")
                 prepareStatement2.use { statement ->
                     statement.setLong(1, amount)
                     statement.setLong(2, accountId1)
 
                     statement.executeUpdate()
-                }
-
-                val prepareStatement3 = conn.prepareStatement("select * from account1 where id = ? for update")
-                prepareStatement3.use { statement ->
-                    statement.setLong(1, accountId2)
-                    statement.executeQuery()
                 }
 
                 val prepareStatement4 = conn.prepareStatement("update account1 set amount = amount + ? where id = ?")
