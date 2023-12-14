@@ -1,0 +1,1 @@
+insert into account1 values ( 1, 1000, 0), (2, 1000, 0)
