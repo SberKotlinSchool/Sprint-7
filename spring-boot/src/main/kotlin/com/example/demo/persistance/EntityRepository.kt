@@ -1,3 +1,7 @@
 package com.example.demo.persistance
 
-interface EntityRepository
+import org.springframework.data.repository.CrudRepository
+import org.springframework.stereotype.Repository
+
+@Repository
+interface EntityRepository: CrudRepository<Entity, Long>
