@@ -1,10 +1,11 @@
-package ru.sber.orm.entities
+package ru.sber.springjpademo.persistence.entity
 
 import org.hibernate.annotations.NaturalId
-import ru.sber.orm.entities.Student
+import ru.sber.springjpademo.persistence.entity.Student
 import javax.persistence.*
 
 @Entity
+@Table(name = "subject")
 class Subject(
     @Id
     @GeneratedValue
@@ -22,6 +23,7 @@ class Subject(
         joinColumns = [JoinColumn(name = "subject_id", referencedColumnName = "id")],
         inverseJoinColumns = [JoinColumn(name = "student_id", referencedColumnName = "id")])
     var students: MutableList<Student>
+
 ){
     override fun toString(): String = "id=$id, name=$name teacher(name = ${teacher.name}) students($students) "
 

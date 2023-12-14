@@ -1,14 +1,10 @@
-package ru.sber.orm.entities
+package ru.sber.springjpademo.persistence.entity
 
 import org.hibernate.annotations.NaturalId
-import javax.persistence.CascadeType
-import javax.persistence.Entity
-import javax.persistence.FetchType
-import javax.persistence.GeneratedValue
-import javax.persistence.Id
-import javax.persistence.ManyToMany
+import javax.persistence.*
 
 @Entity
+@Table(name = "student")
 class Student(
   @Id
   @GeneratedValue
