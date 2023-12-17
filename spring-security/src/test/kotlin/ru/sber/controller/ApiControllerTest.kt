@@ -12,15 +12,17 @@ import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
-import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.test.annotation.DirtiesContext
 import ru.sber.model.Note
 import ru.sber.repository.NoteRepository
 import java.time.LocalDateTime
 import kotlin.test.assertContentEquals
 import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
 import kotlin.test.assertTrue
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 internal class ApiControllerTest {
 
     @LocalServerPort
@@ -44,16 +46,17 @@ internal class ApiControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "api", password = "api", roles = ["API"])
     fun add() {
         //given
         //when
-        val resp = restTemplate.exchange(
-            url("/api/add"),
-            HttpMethod.POST,
-            HttpEntity(testNote, headers),
-            Unit::class.java
-        )
+        val resp = restTemplate
+            .withBasicAuth("api", "api")
+            .exchange(
+                url("/api/add"),
+                HttpMethod.POST,
+                HttpEntity(testNote, headers),
+                Unit::class.java
+            )
         //then
         assertEquals(resp.statusCode, HttpStatus.OK)
 
@@ -62,36 +65,38 @@ internal class ApiControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "api", password = "api", roles = ["API"])
     fun list() {
         //given
         repository.save(testNote)
         repository.save(testNote2)
         //when
-        val resp = restTemplate.exchange(
-            url("/api/list"),
-            HttpMethod.GET,
-            HttpEntity(null, headers),
-            Array<Note>::class.java
-        )
+        val resp = restTemplate
+            .withBasicAuth("admin", "admin")
+            .exchange(
+                url("/api/list"),
+                HttpMethod.GET,
+                HttpEntity(null, headers),
+                Array<Note>::class.java
+            )
         //then
         assertEquals(resp.statusCode, HttpStatus.OK)
         assertContentEquals(resp.body?.toList(), listOf(testNote, testNote2))
     }
 
     @Test
-    @WithMockUser(username = "api", password = "api", roles = ["API"])
     fun view() {
         //given
         testNote = repository.save(testNote)
         testNote2 = repository.save(testNote2)
         //when
-        val resp = restTemplate.exchange(
-            url("/api/${testNote2.id}/view"),
-            HttpMethod.GET,
-            HttpEntity(null, headers),
-            Note::class.java
-        )
+        val resp = restTemplate
+            .withBasicAuth("api", "api")
+            .exchange(
+                url("/api/${testNote2.id}/view"),
+                HttpMethod.GET,
+                HttpEntity(null, headers),
+                Note::class.java
+            )
         //then
         assertEquals(resp.statusCode, HttpStatus.OK)
         assertEquals(resp.body, testNote2)
@@ -99,17 +104,18 @@ internal class ApiControllerTest {
 
 
     @Test
-    @WithMockUser(username = "api", password = "api", roles = ["API"])
     fun edit() {
         //given
         testNote = repository.save(testNote)
         //when
-        val resp = restTemplate.exchange(
-            url("/api/${testNote.id}/edit"),
-            HttpMethod.PUT,
-            HttpEntity(testNote2, headers),
-            Unit::class.java
-        )
+        val resp = restTemplate
+            .withBasicAuth("admin", "admin")
+            .exchange(
+                url("/api/${testNote.id}/edit"),
+                HttpMethod.PUT,
+                HttpEntity(testNote2, headers),
+                Unit::class.java
+            )
         //then
         assertEquals(resp.statusCode, HttpStatus.OK)
         val result = repository.getNoteById(testNote.id!!)
@@ -117,35 +123,36 @@ internal class ApiControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "api", password = "api", roles = ["API"])
     fun deleteNotPermit() {
         //given
         testNote = repository.save(testNote)
         //when
-        val resp = restTemplate.exchange(
-            url("/api/${testNote.id}/delete"),
-            HttpMethod.DELETE,
-            HttpEntity(null, headers),
-            Unit::class.java
-        )
+        val resp = restTemplate
+            .withBasicAuth("user", "user")
+            .exchange(
+                url("/api/${testNote.id}/delete"),
+                HttpMethod.DELETE,
+                HttpEntity(null, headers),
+                Unit::class.java
+            )
         //then
-        // TODO
-//        assertEquals(resp.statusCode, HttpStatus.FOUND)
-//        assertContentEquals(emptyList(), repository.findAll())
+        assertNotEquals(resp.statusCode, HttpStatus.OK)
+        assertContentEquals(listOf(testNote), repository.findAll())
     }
 
     @Test
-    @WithMockUser(username = "admin", password = "admin", roles = ["ADMIN"])
     fun delete() {
         //given
         testNote = repository.save(testNote)
         //when
-        val resp = restTemplate.exchange(
-            url("/api/${testNote.id}/delete"),
-            HttpMethod.DELETE,
-            HttpEntity(null, headers),
-            Unit::class.java
-        )
+        val resp = restTemplate
+            .withBasicAuth("admin", "admin")
+            .exchange(
+                url("/api/${testNote.id}/delete"),
+                HttpMethod.DELETE,
+                HttpEntity(null, headers),
+                Unit::class.java
+            )
         //then
         assertEquals(resp.statusCode, HttpStatus.OK)
         assertContentEquals(emptyList(), repository.findAll())

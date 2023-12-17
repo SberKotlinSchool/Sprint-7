@@ -1,16 +1,4 @@
-DROP TABLE IF EXISTS user_data_roles;
-DROP TABLE IF EXISTS roles;
-DROP TABLE IF EXISTS user_data;
 DROP TABLE IF EXISTS note;
-
-create TABLE IF NOT EXISTS user_data
-(
-    id       bigint NOT NULL,
-    login    varchar(255),
-    password varchar(255),
-    roles    varchar(255),
-    CONSTRAINT user_data_pkey PRIMARY KEY (id)
-);
 
 create TABLE IF NOT EXISTS note
 (
@@ -21,35 +9,19 @@ create TABLE IF NOT EXISTS note
     CONSTRAINT note PRIMARY KEY (id)
 );
 
-create TABLE IF NOT EXISTS roles
+DROP TABLE IF EXISTS users cascade;
+DROP index IF EXISTS ix_auth_username;
+create table IF NOT EXISTS users
 (
-    id    bigint NOT NULL,
-    roles varchar(255),
-    CONSTRAINT role_pkey PRIMARY KEY (id)
+    username varchar_ignorecase(50)  not null primary key,
+    password varchar_ignorecase(500) not null,
+    enabled  boolean                 not null
 );
 
-create TABLE IF NOT EXISTS user_data_roles
+create table IF NOT EXISTS authorities
 (
-    user_id  bigint NOT NULL,
-    roles_id bigint NOT NULL,
-    CONSTRAINT C_USER_ROLE FOREIGN KEY (roles_id)
-        REFERENCES roles (id),
-    CONSTRAINT C_ROLE_USER FOREIGN KEY (user_id)
-        REFERENCES user_data (id)
+    username  varchar_ignorecase(50) not null,
+    authority varchar_ignorecase(50) not null,
+    constraint fk_authorities_users foreign key (username) references users (username)
 );
-
-insert into user_data (id, login, password)
-values (1, 'api', '$2a$10$6k8ogL41MOwrSnpvMQ9C9.lzu614qsDvMjPKb0H85vGnM/rSJwN76'),
-       (2, 'admin', '$2a$10$HAOqnZ3W3YHXjik2OxvyGOWVIP5IAfFAibm8JT3FhQrhyPM8puS1e'),
-       (3, 'user', '$2a$10$zF5bIwkaf2IAfMjqMqAHPOdnRpykD2dCeipBzP2Oq1GbdLaDJsq7e');
-
-insert into roles (id, roles)
-values (1, 'ADMIN'),
-       (2, 'USER'),
-       (3, 'API');
-
-insert into user_data_roles (user_id, roles_id)
-values (1, 3),
-       (2, 1),
-       (2, 2),
-       (3, 2);
+create unique index IF NOT EXISTS ix_auth_username on authorities (username, authority);
