@@ -1,87 +1,106 @@
 package com.dokl57.springmvc.controller
 
-import jakarta.servlet.http.Cookie
+import com.dokl57.springmvc.model.Entry
+import com.dokl57.springmvc.service.AddressBookService
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
-import org.mockito.junit.jupiter.MockitoExtension
+import org.mockito.ArgumentMatchers.anyLong
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.BDDMockito.given
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
-import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
+import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.test.context.junit.jupiter.SpringExtension
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
-@ExtendWith(MockitoExtension::class)
-@AutoConfigureMockMvc
-@SpringBootTest
+@ExtendWith(SpringExtension::class)
+@WebMvcTest(MvcController::class)
+@AutoConfigureMockMvc(addFilters = false)
 class MvcControllerTest {
 
     @Autowired
     private lateinit var mockMvc: MockMvc
 
+    @MockBean
+    private lateinit var addressBookService: AddressBookService
+
+    private lateinit var entry: Entry
+
+    @BeforeEach
+    fun setup() {
+        entry = Entry(1L, "Test Name", "Test Address")
+        given(addressBookService.getEntryById(anyLong())).willReturn(entry)
+        given(addressBookService.getEntries(anyString())).willReturn(listOf(entry))
+    }
+
+    @WithMockUser(roles = ["ADMIN"])
     @Test
     fun `test showAddEntry`() {
-        mockMvc.perform(get("/app/add").cookie(authenticatedCookie()))
+        mockMvc.perform(get("/app/add"))
             .andExpect(status().is3xxRedirection)
             .andExpect(view().name("redirect:/app/list"))
     }
 
+    @WithMockUser(username = "user1", roles = ["ADMIN"])
     @Test
     fun `test addEntry`() {
         mockMvc.perform(
             post("/app/add")
-                .param("name", "Test Name")
-                .param("address", "Test Address")
-                .cookie(authenticatedCookie())
+                .flashAttr("entry", entry)
         )
-            .andExpect(status().is3xxRedirection)
-            .andExpect(redirectedUrl("/app/list"))
-    }
-
-    @Test
-    fun `test getEntries`() {
-        mockMvc.perform(get("/app/list").cookie(authenticatedCookie()))
-            .andExpect(status().isOk)
-            .andExpect(view().name("list"))
-    }
-
-    @Test
-    fun `test viewEntry`() {
-        mockMvc.perform(get("/app/0/view").cookie(authenticatedCookie()))
-            .andExpect(status().isOk)
-            .andExpect(view().name("view"))
-    }
-
-    @Test
-    fun `test showEditEntry`() {
-        mockMvc.perform(get("/app/1/edit").cookie(authenticatedCookie()))
             .andExpect(status().is3xxRedirection)
             .andExpect(view().name("redirect:/app/list"))
     }
 
+    @WithMockUser(roles = ["ADMIN"])
+    @Test
+    fun `test getEntries`() {
+        mockMvc.perform(get("/app/list"))
+            .andExpect(status().isOk)
+            .andExpect(view().name("list"))
+            .andExpect(model().attributeExists("entries"))
+    }
+
+    @WithMockUser(roles = ["ADMIN"])
+    @Test
+    fun `view entry`() {
+        mockMvc.perform(get("/app/{id}/view", 1))
+            .andExpect(status().isOk)
+            .andExpect(view().name("view"))
+            .andExpect(model().attributeExists("entry"))
+    }
+
+    @WithMockUser(roles = ["ADMIN"])
+    @Test
+    fun `test showEditEntry`() {
+        mockMvc.perform(get("/app/{id}/edit", 1))
+            .andExpect(status().isOk)
+            .andExpect(status().is2xxSuccessful)
+            .andExpect(view().name("edit"))
+    }
+
+    @WithMockUser(roles = ["ADMIN"])
     @Test
     fun `test editEntry`() {
         mockMvc.perform(
-            post("/app/1/edit")
-                .param("name", "Updated Name")
-                .param("address", "Updated Address")
-                .cookie(authenticatedCookie())
+            post("/app/{id}/edit", 1)
+                .flashAttr("entry", entry)
         )
             .andExpect(status().is3xxRedirection)
             .andExpect(redirectedUrl("/app/list"))
     }
 
+    @WithMockUser(roles = ["ADMIN"])
     @Test
-    fun `test deleteEntry`() {
-        mockMvc.perform(get("/app/1/delete"))
+    fun `delete entry`() {
+        mockMvc.perform(get("/app/{id}/delete", 1))
             .andExpect(status().is3xxRedirection)
-            .andExpect(redirectedUrl("/app/list"))
-    }
-
-    private fun authenticatedCookie(): Cookie {
-        return Cookie("auth", LocalDateTime.now().plusMinutes(5).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+            .andExpect(view().name("redirect:/app/list"))
     }
 }

@@ -1,5 +1,7 @@
 import com.dokl57.springmvc.service.LoginService
+import org.apache.catalina.webresources.TomcatURLStreamHandlerFactory.disable
 import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -12,6 +14,7 @@ import org.springframework.security.web.SecurityFilterChain
 
 @EnableWebSecurity
 @Configuration
+@ComponentScan("com.dokl57")
 class SecurityConfiguration(private val loginService: LoginService) {
     @Bean
     fun authenticationProvider(): DaoAuthenticationProvider {
@@ -30,7 +33,8 @@ class SecurityConfiguration(private val loginService: LoginService) {
     @Throws(Exception::class)
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         http
-            .csrf { it.disable() }
+            .csrf { disable() }
+            .cors { disable() }
             .authorizeHttpRequests { authz ->
                 authz
                     .requestMatchers("/app/**").hasRole("ADMIN")
