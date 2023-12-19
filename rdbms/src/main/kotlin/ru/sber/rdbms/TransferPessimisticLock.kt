@@ -19,20 +19,26 @@ class TransferPessimisticLock {
             val autoCommit = conn.autoCommit
             try {
                 conn.autoCommit = false
-                val statSelectAccount1 = conn.prepareStatement("select * from account1 where id = ? for update nowait ;")
+                val statSelectAccount1 = conn.prepareStatement("select * from account1 where id = ? for update;")
                 var amountAccount1 = 0L
                 statSelectAccount1.use { statement ->
-                    statement.setLong(1, accountId1)
+                    listOf( accountId1, accountId2).minOrNull()?.let { statement.setLong(1, it) }
                     statement.executeQuery().use {
                         it.next()
+                        println(it.getLong("id"))
+                        println(it.getLong("amount"))
                         amountAccount1 = it.getLong("amount")
                     }
                 }
 
-                val statSelectAccount2 = conn.prepareStatement("select * from account1 where id = ? for update nowait;")
+                val statSelectAccount2 = conn.prepareStatement("select * from account1 where id = ? for update;")
                 statSelectAccount2.use { statement ->
-                    statement.setLong(1, accountId2)
-                    statement.executeQuery()
+                    listOf( accountId1, accountId2).maxOrNull()?.let { statement.setLong(1, it) }
+                    statement.executeQuery().use {
+                        it.next()
+                        println(it.getLong("id"))
+                        println(it.getLong("amount"))
+                    }
                 }
 
                 if (amountAccount1 - amount < 0)
