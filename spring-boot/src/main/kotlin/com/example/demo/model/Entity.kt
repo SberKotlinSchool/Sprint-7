@@ -1,7 +1,7 @@
 package com.example.demo.model
 
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
 import org.springframework.data.annotation.Id
 
 @Entity
