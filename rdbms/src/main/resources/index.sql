@@ -1,0 +1,1 @@
+create index account1_vi ON account1 ( version, id );
