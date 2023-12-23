@@ -5,7 +5,7 @@ import java.sql.SQLException
 
 fun main() {
 
-    TransferPessimisticLock().transfer(1, 2, 100)
+    TransferPessimisticLock().transfer(2, 1, 800)
 }
 class TransferPessimisticLock {
 
@@ -17,28 +17,29 @@ class TransferPessimisticLock {
     fun transfer(accountId1: Long, accountId2: Long, amount: Long) {
         connection.use { conn ->
             val autoCommit = conn.autoCommit
-            try {
-                conn.autoCommit = false
-                val statSelectAccount1 = conn.prepareStatement("select * from account1 where id = ? for update;")
-                var amountAccount1 = 0L
-                statSelectAccount1.use { statement ->
-                    listOf( accountId1, accountId2).minOrNull()?.let { statement.setLong(1, it) }
-                    statement.executeQuery().use {
-                        it.next()
-                        println(it.getLong("id"))
-                        println(it.getLong("amount"))
-                        amountAccount1 = it.getLong("amount")
-                    }
-                }
+            var amountAccount1 = 0L
 
-                val statSelectAccount2 = conn.prepareStatement("select * from account1 where id = ? for update;")
-                statSelectAccount2.use { statement ->
-                    listOf( accountId1, accountId2).maxOrNull()?.let { statement.setLong(1, it) }
-                    statement.executeQuery().use {
-                        it.next()
-                        println(it.getLong("id"))
-                        println(it.getLong("amount"))
+            try {
+
+                if ( accountId1 ==  accountId2)
+                    throw SQLException("Прыжок на месте")
+
+                conn.autoCommit = false
+
+                listOf(accountId1, accountId2).sorted().forEach{ accountId ->
+
+                    val statSelectAccount = conn.prepareStatement("select * from account1 where id = ? for update;")
+                    statSelectAccount.use { statement ->
+                        statement.setLong(1, accountId)
+                        statement.executeQuery().use {
+                            it.next()
+                            println(it.getLong("id"))
+                            println(it.getLong("amount"))
+                            if (accountId1 == accountId)
+                            amountAccount1 = it.getLong("amount")
+                        }
                     }
+
                 }
 
                 if (amountAccount1 - amount < 0)
