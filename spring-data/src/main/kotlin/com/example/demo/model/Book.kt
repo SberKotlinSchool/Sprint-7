@@ -1,9 +1,9 @@
 package com.example.demo.model
 
-import jakarta.persistence.CascadeType
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.ManyToOne
+import javax.persistence.CascadeType
+import javax.persistence.Entity
+import javax.persistence.GeneratedValue
+import javax.persistence.ManyToOne
 import org.springframework.data.annotation.Id
 
 @Entity

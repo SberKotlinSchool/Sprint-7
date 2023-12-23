@@ -3,15 +3,17 @@ package com.example.sprint6.hibernate.model
 import javax.persistence.Basic
 import javax.persistence.CascadeType
 import javax.persistence.Entity
+import javax.persistence.GeneratedValue
 import javax.persistence.ManyToOne
 import javax.persistence.Table
 import org.hibernate.annotations.Cascade
-import org.springframework.data.annotation.Id
+import javax.persistence.Id
 
 @Entity
 @Table(name = "book")
 class Book {
     @Id
+    @GeneratedValue
     var id: Long = 0
 
     @Basic
