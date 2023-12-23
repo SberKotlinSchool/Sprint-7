@@ -1,5 +1,7 @@
 databaseChangeLog:
   - include:
       file: init.sql
-
-
+  - include:
+      file: createAmountConstraint.sql
+  - include:
+      file: addIndex.sql
