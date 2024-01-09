@@ -13,6 +13,6 @@ class AuthService {
     }
 
     fun verify(user: User): Boolean {
-        return database.get(user.login).equals(user.password) ?: false
+        return database[user.login].equals(user.password)
     }
 }

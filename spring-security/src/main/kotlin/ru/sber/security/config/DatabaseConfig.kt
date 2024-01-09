@@ -25,29 +25,23 @@ class DatabaseConfig {
 
     @Bean
     fun users(dataSource: DataSource): UserDetailsManager {
-        val userBuilder = User.builder()
-        val encoder = PasswordEncoderFactories.createDelegatingPasswordEncoder()
-        val userApp: UserDetails = userBuilder
-            .username("USER_APP")
-            .password(encoder.encode("Qq123456"))
-            .roles("APP")
-            .build()
-        val userApi: UserDetails = userBuilder
-            .username("USER_API")
-            .password(encoder.encode("Qq123456"))
-            .roles("API")
-            .build()
-        val admin: UserDetails = userBuilder
-            .username("ADMIN")
-            .password(encoder.encode("Qq123456"))
-            .roles("ADMIN")
-            .build()
+
         val users = JdbcUserDetailsManager(dataSource)
-        users.createUser(userApi)
-        users.createUser(userApp)
-        users.createUser(admin)
+
+        val userDetailsList: List<UserDetails> = listOf(
+            createUser("USER_APP", "Qq123456", "APP"),
+            createUser("USER_API", "Qq123456", "API"),
+            createUser("ADMIN", "Qq123456", "ADMIN")
+        )
+        userDetailsList.forEach { users.createUser(it) }
         return users
     }
+
+    private fun createUser(username: String, password: String, vararg roles: String): UserDetails {
+        return User.builder()
+            .username(username)
+            .password(PasswordEncoderFactories.createDelegatingPasswordEncoder().encode(password))
+            .roles(*roles)
+            .build()
+    }
 }
-
-

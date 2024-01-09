@@ -5,21 +5,22 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
-import ru.sber.security.dto.Entity
+import ru.sber.security.dto.Student
 import ru.sber.security.service.AddressBookService
 
 @Controller
 @RequestMapping("/app")
 class MvcController @Autowired constructor(private val addressBookService: AddressBookService) {
+
     @GetMapping("/add")
-    fun add(@ModelAttribute entity: Entity, model: Model): String {
-        model.addAttribute("entity", entity)
+    fun addForm(@ModelAttribute student: Student, model: Model): String {
+        model.addAttribute("entity", student)
         return "add"
     }
 
     @PostMapping("/add")
-    fun add(@ModelAttribute entity: Entity): String {
-        addressBookService.add(entity)
+    fun add(@ModelAttribute student: Student): String {
+        addressBookService.add(student)
         return "redirect:/app/list"
     }
 
@@ -29,21 +30,21 @@ class MvcController @Autowired constructor(private val addressBookService: Addre
         return "list"
     }
 
-    @GetMapping("{entityId}/view")
+    @GetMapping("/{entityId}/view")
     fun view(@PathVariable entityId: Long, model: Model): String {
         model.addAttribute("entity", addressBookService.view(entityId))
         return "view"
     }
 
-    @GetMapping("{entityId}/edit")
-    fun edit(@PathVariable entityId: Long, model: Model): String {
+    @GetMapping("/{entityId}/edit")
+    fun editForm(@PathVariable entityId: Long, model: Model): String {
         model.addAttribute("entity", addressBookService.view(entityId))
         return "edit"
     }
 
-    @PostMapping("{entityId}/edit")
-    fun edit(@PathVariable entityId: Long, @ModelAttribute entity: Entity): String {
-        addressBookService.edit(entityId, entity)
+    @PostMapping("/{entityId}/edit")
+    fun edit(@PathVariable entityId: Long, @ModelAttribute student: Student): String {
+        addressBookService.edit(entityId, student)
         return "redirect:/app/list"
     }
 
