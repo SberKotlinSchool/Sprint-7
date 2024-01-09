@@ -1,5 +1,8 @@
 package ru.sber.rdbms
 
+import java.sql.DriverManager
+import java.sql.SQLException
+
 class TransferConstraint {
     fun transfer(accountId1: Long, accountId2: Long, amount: Long) {
         val sql = """
