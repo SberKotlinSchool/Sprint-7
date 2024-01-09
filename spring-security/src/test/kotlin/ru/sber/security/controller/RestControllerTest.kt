@@ -44,15 +44,15 @@ internal class RestControllerTest {
     @AfterEach
     fun tearDown() = addressBookService.deleteAll()
 
-//    @Test
-//    fun add() {
-//        val sizeBefore = addressBookService.size()
-//        val response = restTemplate.postForEntity(url("/api/add"), testEntity02, Nothing::class.java)
-//        val sizeAfter = addressBookService.size()
-//
-//        assertEquals(HttpStatus.CREATED, response.statusCode)
-//        assertEquals(1, sizeAfter - sizeBefore)
-//    }
+    @Test
+    fun add() {
+        val sizeBefore = addressBookService.size()
+        val response = restTemplate.postForEntity(url("/api/add"), testStudent02, Nothing::class.java)
+        val sizeAfter = addressBookService.size()
+
+        assertEquals(HttpStatus.CREATED, response.statusCode)
+        assertEquals(1, sizeAfter - sizeBefore)
+    }
 
     @Test
     fun view() {
