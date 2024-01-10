@@ -1,7 +1,9 @@
-package com.example.demo.persistance
+package ru.sber.repository
 
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
+import ru.sber.entity.Address
 
 @Repository
-interface EntityRepository: CrudRepository<Entity, Long>
+interface AddressRepo : CrudRepository<Address, Long> {
+}
