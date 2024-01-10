@@ -1,69 +1,68 @@
 import dao.MagicianDao
 import entity.Address
-import entity.Competition
 import entity.ContactInformation
-import entity.Magician
-import entity.Nomination
+import entity.Citizen
+import entity.ContactType
 import org.hibernate.cfg.Configuration
 
 fun main() {
     val sessionFactory = Configuration().configure()
         .addAnnotatedClass(Address::class.java)
-        .addAnnotatedClass(Competition::class.java)
         .addAnnotatedClass(ContactInformation::class.java)
-        .addAnnotatedClass(Magician::class.java)
-        .addAnnotatedClass(Nomination::class.java)
+        .addAnnotatedClass(Citizen::class.java)
+        .addAnnotatedClass(ContactType::class.java)
         .buildSessionFactory()
 
-    sessionFactory.use { sf ->
+    sessionFactory.use {
         val dao = MagicianDao(sessionFactory)
 
-        val magician1 = Magician(
-            id = 1,
+        val citizen1 = Citizen(
             firstName = "Anton",
             secondName = "Rogozhin",
-            address = Address("Russia", "Moscow"),
-            contactInformation = ContactInformation(phoneNumber = "+79111112233", email = "qwe@asd.ru"),
-            competition = listOf(
-                Competition(1, 1, Nomination.STAGE, 1),
-                Competition(2, 1, Nomination.ONE_TRICK, 2)
-            ),
+            address = Address(country = "Russia", city = "Moscow")
         )
-
-        val magician2 = Magician(
-            id = 2,
-            firstName = "Victpria",
+        val citizen2 = Citizen(
+            firstName = "Victoria",
             secondName = "Rogozhina",
-            address = Address("Russia", "Moscow"),
-            contactInformation = ContactInformation(phoneNumber = "+79223334455", email = "asd@zxc.ru"),
-            competition = listOf(
-                Competition(3, 2, Nomination.STAGE, 2),
-                Competition(4, 2, Nomination.ONE_TRICK, 3)
-            ),
+            address = Address(country = "Russia", city = "Moscow")
         )
-
-        val magician3 = Magician(
-            id = 3,
+        val citizen3 = Citizen(
             firstName = "Roman",
             secondName = "Veselov",
-            address = Address("Russia", "SPB"),
-            contactInformation = ContactInformation(phoneNumber = "+79334445566", email = "zxc@vbn.ru"),
-            competition = listOf(
-                Competition(5, 3, Nomination.KIDS_STAGE, 1),
-                Competition(6, 3, Nomination.KIDS_MICROMAGIC, 1)
-            ),
+            address = Address(country = "Russia", city = "SPB")
         )
 
-        dao.save(magician1)
-        dao.save(magician2)
-        dao.save(magician3)
+        val contactsM1 = listOf(
+            ContactInformation(type = ContactType.PHONE, value = "79112223344", citizen = citizen1),
+            ContactInformation(type = ContactType.EMAIL, value = "qwe@asd.ru", citizen = citizen1)
+        )
+        val contactsM2 = listOf(
+            ContactInformation(type = ContactType.PHONE, value = "79223334455", citizen = citizen2),
+            ContactInformation(type = ContactType.SITE, value = "magician.ru", citizen = citizen2)
+        )
+        val contactsM3 = listOf(
+            ContactInformation(type = ContactType.PHONE, value = "79334445566", citizen = citizen3),
+            ContactInformation(type = ContactType.EMAIL, value = "asd@zxc.ru", citizen = citizen3),
+            ContactInformation(type = ContactType.SITE, value = "best-magician.ru", citizen = citizen3)
+        )
+
+        citizen1.contactInformation = contactsM1
+        citizen2.contactInformation = contactsM2
+        citizen3.contactInformation = contactsM3
+
+
+        listOf(citizen1, citizen2, citizen3).forEach {
+            dao.save(it)
+        }
 
         println("${dao.findAll()}")
-        println("${dao.findById(1)}")
-        println("${dao.find(ContactInformation( phoneNumber = "+79334445566", email = "zxc@vbn.ru"))}")
-        magician2.firstName = "Виктория"
-        println("${dao.update(magician2)}")
-        dao.delete(magician1)
-        println("${dao.findAll()}")
+        println("\n${dao.findById(1)}")
+        println("\n${dao.find("Roman")}")
+        citizen2.firstName = "Виктория"
+        println("\n${dao.update(citizen2)}")
+        dao.delete(citizen1)
+        println("\n${dao.findAll()}")
     }
+
+
 }

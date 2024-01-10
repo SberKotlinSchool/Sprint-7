@@ -20,7 +20,7 @@ class TransferOptimisticLock {
                 conn.autoCommit = false
                 var version: Int
                 val ps1 = conn.prepareStatement(versionAndAmount)
-                ps1.setLong(1, 1)
+                ps1.setLong(1, accountId1)
                 ps1.use { statement ->
                     statement.executeQuery().use {
                         it.next()
@@ -29,8 +29,8 @@ class TransferOptimisticLock {
                 }
                 val ps2 = conn.prepareStatement(update)
                 ps2.use { statement ->
-                    ps2.setLong(1, 100)
-                    ps2.setLong(2, 2)
+                    ps2.setLong(1, amount)
+                    ps2.setLong(2, accountId2)
                     statement.setInt(3, version)
                     val updatedRows = statement.executeUpdate()
                     if (updatedRows == 0)

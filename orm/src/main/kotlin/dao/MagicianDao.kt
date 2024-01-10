@@ -1,63 +1,65 @@
 package dao
 
-import entity.ContactInformation
-import entity.Magician
+import entity.Citizen
 import org.hibernate.SessionFactory
 
 class MagicianDao(private val sessionFactory: SessionFactory) {
-    fun save(magician: Magician) {
+
+    fun save(citizen: Citizen) {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            session.save(magician)
+            session.save(citizen.address)
+            citizen.contactInformation.forEach { session.save(it) }
+            session.save(citizen)
             session.transaction.commit()
         }
     }
 
-    fun findById(id: Int): Magician? {
-        val res: Magician?
+    fun findById(id: Int): Citizen? {
+        val res: Citizen?
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            res = session.get(Magician::class.java, id)
+            res = session.get(Citizen::class.java, id)
             session.transaction.commit()
         }
         return res
     }
 
-    fun find(contactInformation: ContactInformation): Magician? {
-        val res: Magician?
+    fun find(firstName: String): Citizen? {
+        val res: Citizen?
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            res = session.byNaturalId(Magician::class.java)
-                .using("contactInformation", contactInformation).loadOptional()
+            res = session.byNaturalId(Citizen::class.java)
+                .using("firstName", firstName).loadOptional()
                 .orElse(null)
             session.transaction.commit()
         }
         return res
     }
 
-    fun findAll(): List<Magician> {
-        val res: List<Magician>
+    fun findAll(): List<Citizen> {
+        val res: List<Citizen>
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            res = session.createQuery("from magician").list() as List<Magician>
+            res = session.createQuery("from Citizen").list() as List<Citizen>
             session.transaction.commit()
         }
         return res
     }
 
-    fun update(magician: Magician): Magician {
-        val res: Magician
+    fun update(citizen: Citizen): Citizen {
+        val res: Citizen
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            res = session.merge(magician) as Magician
+            res = session.merge(citizen) as Citizen
         }
         return res
     }
 
-    fun delete(magician: Magician) {
+    fun delete(citizen: Citizen) {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            session.delete(magician)
+            session.delete(citizen)
             session.transaction.commit()
         }
     }
