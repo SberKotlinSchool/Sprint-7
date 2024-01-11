@@ -8,14 +8,12 @@ import ru.sber.springdata.entity.ContactInformation
 import ru.sber.springdata.entity.Address
 import ru.sber.springdata.entity.ContactType
 import ru.sber.springdata.repository.AddressRepository
-import ru.sber.springdata.repository.ContactInformationRepository
 import ru.sber.springdata.repository.CitizenRepository
 
 @SpringBootApplication
 class Application(
     private val citizenRepository: CitizenRepository,
     private val addressRepository: AddressRepository,
-    private val contactInformationRepository: ContactInformationRepository
 ) : CommandLineRunner {
     override fun run(vararg args: String?) {
         val citizen1 = Citizen(
