@@ -9,6 +9,7 @@ import org.springframework.security.config.web.servlet.invoke
 import org.springframework.security.web.SecurityFilterChain
 
 @Configuration
+@EnableWebSecurity
 class SecurityConfig {
     @Bean
     @Profile("default")

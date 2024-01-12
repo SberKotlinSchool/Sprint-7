@@ -1,5 +1,6 @@
 package ru.sber.controller
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -8,7 +9,7 @@ import ru.sber.service.AddressBookService
 
 @RestController
 @RequestMapping("/api")
-class AddressBookRestController(private val addressBookService: AddressBookService) {
+class AddressBookRestController @Autowired constructor(private val addressBookService: AddressBookService) {
     @PostMapping("/add")
     fun addNewPerson(@RequestBody person: Person): ResponseEntity<Any> {
         return ResponseEntity.ok(addressBookService.addNewPerson(person))

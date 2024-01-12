@@ -1,5 +1,6 @@
 package ru.sber.controller
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
@@ -10,7 +11,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 @Controller
 @RequestMapping("/app")
-class AddressBookController(private val addressBookService: AddressBookService) {
+class MvcController @Autowired constructor(private val addressBookService: AddressBookService) {
     private val atomicId = AtomicLong(1)
 
     @GetMapping("/add")
