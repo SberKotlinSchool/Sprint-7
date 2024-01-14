@@ -1,64 +1,64 @@
-import entity.Actor
-import entity.Film
+import entity.Author
+import entity.Book
 import entity.Language
 import org.hibernate.SessionFactory
 import org.hibernate.cfg.Configuration
 
 fun main() {
     val sessionFactory = Configuration().configure()
-        .addAnnotatedClass(Film::class.java)
-        .addAnnotatedClass(Actor::class.java)
+        .addAnnotatedClass(Book::class.java)
+        .addAnnotatedClass(Author::class.java)
         .addAnnotatedClass(Language::class.java)
         .buildSessionFactory()
 
     sessionFactory.use { sessionFactory ->
-        val dao = FilmDAO(sessionFactory)
+        val dao = BookDAO(sessionFactory)
 
-        val firstFilm =
-            Film(
-                title = "First Film",
-                localTitle = "First Film Local",
-                actors = mutableSetOf(Actor(name = "First Actor"), Actor(name = "Second Actor")),
+        val firstBook =
+            Book(
+                title = "First Book",
+                localTitle = "First Book Local",
+                authors = mutableSetOf(Author(name = "First Author"), Author(name = "Second Author")),
                 language = Language(name = "First Language")
             )
-        val secondFilm =
-            Film(
-                title = "Second Film",
-                localTitle = "Second Film Local",
-                actors = mutableSetOf(Actor(name = "Third Actor")),
+        val secondBook =
+            Book(
+                title = "Second Book",
+                localTitle = "Second Book Local",
+                authors = mutableSetOf(Author(name = "Third Author")),
                 language = Language(name = "Second Language")
             )
-        val thirdFilm =
-            Film(
-                title = "Third Film",
-                localTitle = "Third Film Local",
-                actors = mutableSetOf(Actor(name = "First Actor"), Actor(name = "Second Actor"), Actor(name = "Third Actor")),
+        val thirdBook =
+            Book(
+                title = "Third Book",
+                localTitle = "Third Book Local",
+                authors = mutableSetOf(Author(name = "First Author"), Author(name = "Second Author"), Author(name = "Third Author")),
                 language = Language(name = "Third Language")
             )
 
-        dao.save(firstFilm)
-        dao.save(secondFilm)
-        dao.save(thirdFilm)
+        dao.save(firstBook)
+        dao.save(secondBook)
+        dao.save(thirdBook)
 
-        var found = dao.find(firstFilm.film_id)
-        println("film found: $found \n")
+        var found = dao.find(firstBook.book_id)
+        println("Book found: $found \n")
 
-        found = dao.find(secondFilm.title)
-        println("film found: $found \n")
+        found = dao.find(secondBook.title)
+        println("Book found: $found \n")
 
-        val allFilms = dao.findAll()
-        println("all films: $allFilms")
+        val allBooks = dao.findAll()
+        println("all Books: $allBooks")
 
-        dao.delete(firstFilm)
+        dao.delete(firstBook)
 
-        secondFilm.language = Language(name = "Third Language")
+        secondBook.language = Language(name = "Third Language")
 
-        dao.update(secondFilm)
+        dao.update(secondBook)
     }
 }
 
-class FilmDAO(private val sessionFactory: SessionFactory) {
-    fun save(person: Film) {
+class BookDAO(private val sessionFactory: SessionFactory) {
+    fun save(person: Book) {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
             session.save(person)
@@ -66,48 +66,48 @@ class FilmDAO(private val sessionFactory: SessionFactory) {
         }
     }
 
-    fun find(id: Long): Film? {
-        val result: Film?
+    fun find(id: Long): Book? {
+        val result: Book?
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            result = session.get(Film::class.java, id)
+            result = session.get(Book::class.java, id)
             session.transaction.commit()
         }
         return result
     }
 
-    fun find(title: String): Film? {
-        val result: Film?
+    fun find(title: String): Book? {
+        val result: Book?
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            result = session.byNaturalId(Film::class.java).using("title", title).loadOptional().orElse(null)
+            result = session.byNaturalId(Book::class.java).using("title", title).loadOptional().orElse(null)
             session.transaction.commit()
         }
         return result
     }
 
-    fun findAll(): List<Film> {
-        val result: List<Film>
+    fun findAll(): List<Book> {
+        val result: List<Book>
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            result = session.createQuery("from Film").list() as List<Film>
+            result = session.createQuery("from Book").list() as List<Book>
             session.transaction.commit()
         }
         return result
     }
 
-    fun delete(film: Film) {
+    fun delete(book: Book) {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            session.delete(film)
+            session.delete(book)
             session.transaction.commit()
         }
     }
 
-    fun update(film: Film) {
+    fun update(book: Book) {
         sessionFactory.openSession().use { session ->
             session.beginTransaction()
-            session.update(film)
+            session.update(book)
             session.transaction.commit()
         }
     }
