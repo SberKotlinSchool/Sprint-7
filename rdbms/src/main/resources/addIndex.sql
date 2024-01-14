@@ -1,0 +1,1 @@
+create index account_index on account1 (id);
