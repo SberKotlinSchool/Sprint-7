@@ -73,6 +73,11 @@
                         <goals>
                             <goal>compile</goal>
                         </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                            </sourceDirs>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>test-compile</id>
@@ -104,8 +109,8 @@
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>4.5.0</version>
                 <configuration>
-                    <changeLogFile>db.changelog-master.yaml</changeLogFile>
-                    <url>jdbc:postgresql://localhost:5432/db</url>
+                    <changeLogFile>src/main/resources/db.changelog-master.yaml</changeLogFile>
+                    <url>jdbc:postgresql://localhost:5432/rdbms</url>
                     <username>postgres</username>
                     <password>postgres</password>
                 </configuration>

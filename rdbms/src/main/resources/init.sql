@@ -1,12 +1,13 @@
---liquibase formatted sql
-
---changeset rrmasgutov:init
-
-create table account1
+create table accounts
 (
-    id bigserial constraint account_pk primary key,
-    amount int,
+    id bigserial
+        constraint account_pk primary key,
+    amount  int,
     version int
 );
+
+insert into accounts
+values (1, 100, 1),
+       (2, 1200, 1);
 
 
