@@ -1,0 +1,1 @@
+create index account_index_versionid ON accounts (version, id);

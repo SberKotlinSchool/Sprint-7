@@ -2,20 +2,22 @@ package ru.sber.rdbms
 
 import java.sql.DriverManager
 
+const val JDBC_POSTGRES_DB_CONNECTION: String = "jdbc:postgresql://localhost:5432/rdbms"
+const val DB_USER: String = "postgres"
+const val DB_PASS: String = "postgres"
+
 fun main() {
     val connection = DriverManager.getConnection(
-        "jdbc:postgresql://localhost:5432/db",
-        "postgres",
-        "postgres"
+        JDBC_POSTGRES_DB_CONNECTION, DB_USER, DB_PASS
     )
     connection.use { conn ->
-        val prepareStatement = conn.prepareStatement("select 1")
+        val prepareStatement = conn.prepareStatement("select count(*) from accounts")
         prepareStatement.use { statement ->
             val resultSet = statement.executeQuery()
             resultSet.use {
-                println("Has result: ${it.next()}")
+                println("Есть записи: ${it.next()}")
                 val result = it.getInt(1)
-                println("Execution result: $result")
+                println("Количество записей: $result")
             }
         }
     }
