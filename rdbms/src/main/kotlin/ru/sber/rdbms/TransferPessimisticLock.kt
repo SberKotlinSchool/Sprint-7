@@ -15,7 +15,7 @@ class TransferPessimisticLock {
 
         connection.use { conn ->
             val collectingInfoStatement =
-                conn.prepareStatement("SELECT * FROM accounts.account WHERE id IN (?, ?) FOR UPDATE")
+                conn.prepareStatement("SELECT * FROM accounts.account WHERE id IN (?, ?) ORDER BY id FOR UPDATE")
             val amounts = LongArray(2)
             val autoCommit = conn.autoCommit
             try {

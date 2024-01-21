@@ -1,21 +1,15 @@
 package com.firebat.addressbook.service
 
+import com.firebat.addressbook.repository.UserRepository
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
 import org.springframework.stereotype.Service
-import java.util.concurrent.ConcurrentHashMap
 
 @Service
-class AuthService {
-    private var database: ConcurrentHashMap<String, String> = ConcurrentHashMap()
-
-    init {
-        database["q"] = "q"
-    }
-
-    fun isLoginSuccess(login: String, password: String): Boolean {
-        val correctPassword = database[login] ?: return false
-        if (correctPassword != password) {
-            return false
-        }
-        return true
+class AuthService(val userRepository: UserRepository) : UserDetailsService {
+    override fun loadUserByUsername(p0: String?): UserDetails {
+        return userRepository.findByUsername(p0!!)?.toUserDetails()
+            ?: throw UsernameNotFoundException("User named $p0 not found")
     }
 }

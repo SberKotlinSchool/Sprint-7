@@ -4,6 +4,7 @@ import com.firebat.addressbook.model.Entry
 import com.firebat.addressbook.service.AddressBookService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.bind.annotation.RestController
 
@@ -37,6 +38,7 @@ class RestController @Autowired constructor(val addressBookService: AddressBookS
         )
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_API_DELETE') or hasPermission(#id, 'com.firebat.addressbook.model.Entry','DELETE')")
     @DeleteMapping("/{id}/delete")
     fun deleteEntry(@PathVariable id: Long): ResponseEntity<Entry> {
         return ResponseEntity.ok().body(

@@ -3,6 +3,7 @@ package com.firebat.addressbook.controller
 import com.firebat.addressbook.model.Entry
 import com.firebat.addressbook.service.AddressBookService
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.*
@@ -14,7 +15,7 @@ class MvcController @Autowired constructor(private val addressBookService: Addre
 
     @GetMapping("/add")
     fun showAddEntry(model: Model): String {
-        model.addAttribute("entry", Entry("", ""))
+        model.addAttribute("entry", Entry(name = "", address = ""))
         return "add"
     }
 
@@ -49,6 +50,7 @@ class MvcController @Autowired constructor(private val addressBookService: Addre
         return TO_MAIN_PAGE
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_API_DELETE') or hasPermission(#id, 'com.firebat.addressbook.model.Entry','DELETE')")
     @GetMapping("/{id}/delete")
     fun deleteEntry(@PathVariable id: Long): String {
         addressBookService.deleteEntry(id)

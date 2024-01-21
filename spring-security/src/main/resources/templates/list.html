@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <title>Entries</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -18,5 +18,8 @@
         <td th:text="${mapEntry.value.address}"></td>
     </tr>
 </table>
+<div sec:authorize="hasRole('ADMIN')">
+    <b>Этот текст видят только админы</b>
+</div>
 </body>
 </html>

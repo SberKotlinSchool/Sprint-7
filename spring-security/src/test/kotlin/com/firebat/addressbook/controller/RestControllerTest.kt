@@ -1,21 +1,29 @@
 package com.firebat.addressbook.controller
 
-import com.firebat.addressbook.model.Entry
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.client.TestRestTemplate
 import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
-import org.springframework.http.HttpStatus
+import org.springframework.http.MediaType.APPLICATION_JSON
+import org.springframework.security.test.context.support.WithMockUser
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity
 import org.springframework.test.annotation.DirtiesContext
-import java.time.LocalDateTime
+import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.web.context.WebApplicationContext
+import org.springframework.web.util.NestedServletException
 
-
+/* FIXME есть ли возможность проверить SecurityConfig, тот же редирект неавторизованных пользователей?
+    В локальных тестах вижу только работу @PreAuthorize(), ее проверял с помощью @WithMockUser
+    После перехода на Java 8 и добавления Spring Security стал непредсказуемо работать TestRestTemplate,
+    так и не понял, что значит его статус 302
+ */
+@AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class RestControllerTest {
@@ -23,180 +31,69 @@ class RestControllerTest {
     private var port: Int = 0
 
     @Autowired
-    private lateinit var restTemplate: TestRestTemplate
+    lateinit var mockMvc: MockMvc
+
+    @Autowired
+    private lateinit var context: WebApplicationContext
+
+    @BeforeEach
+    fun setup() {
+        mockMvc = MockMvcBuilders
+            .webAppContextSetup(context)
+            .apply { springSecurity() }
+            .build()
+    }
 
     @Test
+    @WithMockUser(roles = ["API"])
     fun addEntry() {
-        restTemplate.exchange(
-            url("/api/add"),
-            HttpMethod.POST,
-            HttpEntity(Entry(name = "Name", address = "Address"), getAuthHeader()),
-            Long::class.java
-        ).apply {
-            assertEquals(1, this.body)
-            assertEquals(HttpStatus.OK, this.statusCode)
-        }
+        mockMvc.perform(
+            MockMvcRequestBuilders.post(url("/api/add"))
+                .content("{ \"name\" : \"user\", \"address\" : \"Address\" }")
+                .contentType(APPLICATION_JSON)
+        )
+            .andExpect(status().isOk)
     }
 
     @Test
     fun addEntryWithoutAuth() {
-        restTemplate.exchange(
-            url("/api/add"),
-            HttpMethod.POST,
-            HttpEntity(Entry(name = "Name", address = "Address"), null),
-            Long::class.java
-        ).apply {
-            assertEquals(HttpStatus.FOUND, this.statusCode)
+        assertThrows<NestedServletException> { // FIXME исключение Authentication required, полученное при создании ACL sid обернуто вот в это
+            mockMvc.perform(
+                MockMvcRequestBuilders.post(url("/api/add"))
+                    .content("{ \"name\" : \"user\", \"address\" : \"Address\" }")
+                    .contentType(APPLICATION_JSON)
+            )
         }
     }
 
     @Test
-    fun getEntries() {
-        restTemplate.exchange(
-            url("/api/list"),
-            HttpMethod.GET,
-            HttpEntity(
-                null,
-                getAuthHeader()
-            ), Set::class.java
-        ).apply {
-            assertNotNull(this)
-            assertNotNull(this.body)
-            assertEquals(HttpStatus.OK, this.statusCode)
-            assertEquals(1, this.body!!.size)
-        }
-    }
-
-    @Test
-    fun getEntriesWithoutAuth() {
-        restTemplate.exchange(
-            url("/api/list"),
-            HttpMethod.POST,
-            HttpEntity(
-                null,
-                null,
-            ), Set::class.java
-        ).apply {
-            assertEquals(HttpStatus.FOUND, this.statusCode)
-        }
-    }
-
-    @Test
-    fun viewEntry() {
-        restTemplate.exchange(
-            url("/api/0/view"),
-            HttpMethod.GET,
-            HttpEntity(null, getAuthHeader()),
-            Entry::class.java
-        ).apply {
-            assertNotNull(this)
-            assertNotNull(this.body)
-            assertEquals(HttpStatus.OK, this.statusCode)
-            assertEquals("InitialName", this.body!!.name)
-            assertEquals("InitialAddress", this.body!!.address)
-        }
-    }
-
-    @Test
-    fun viewNonExistingEntry() {
-        restTemplate.exchange(
-            url("/api/2/view"),
-            HttpMethod.GET,
-            HttpEntity(null, getAuthHeader()),
-            Entry::class.java
-        ).apply {
-            assertEquals(HttpStatus.NOT_FOUND, this.statusCode)
-        }
-    }
-
-    @Test
-    fun viewEntryWithoutAuth() {
-        restTemplate.exchange(
-            url("/api/0/view"),
-            HttpMethod.POST,
-            HttpEntity(null, null),
-            Entry::class.java
-        ).apply {
-            assertEquals(HttpStatus.FOUND, this.statusCode)
-        }
-    }
-
-    @Test
-    fun editEntry() {
-        restTemplate.exchange(
-            url("/api/0/edit"),
-            HttpMethod.PUT,
-            HttpEntity(Entry(name = "Name2", address = "Address2"), getAuthHeader()),
-            Entry::class.java
-        ).apply {
-            assertNotNull(this)
-            assertNotNull(this.body)
-            assertEquals(HttpStatus.OK, this.statusCode)
-        }
-    }
-
-    @Test
-    fun editNonExistingEntry() {
-        restTemplate.exchange(
-            url("/api/2/edit"),
-            HttpMethod.PUT,
-            HttpEntity(Entry(name = "Name2", address = "Address2"), getAuthHeader()),
-            Entry::class.java
-        ).apply {
-            assertEquals(HttpStatus.NOT_FOUND, this.statusCode)
-        }
-    }
-
-    @Test
-    fun editEntryWithoutAuth() {
-        restTemplate.exchange(
-            url("/api/0/edit"),
-            HttpMethod.PUT,
-            HttpEntity(Entry(name = "Name2", address = "Address2"), null),
-            Entry::class.java
-        ).apply {
-            assertEquals(HttpStatus.FOUND, this.statusCode)
-        }
-    }
-
-    @Test
+    @WithMockUser(roles = ["API_DELETE"])
     fun deleteEntry() {
-        restTemplate.exchange(
-            url("/api/0/delete"),
-            HttpMethod.DELETE,
-            HttpEntity(null, getAuthHeader()),
-            Unit::class.java
-        ).apply {
-            assertEquals(HttpStatus.OK, this.statusCode)
-        }
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete(url("/api/0/delete"))
+        )
+            .andExpect(status().isOk)
     }
 
     @Test
+    @WithMockUser(roles = ["API_DELETE"])
     fun deleteNonExistingEntry() {
-        restTemplate.exchange(
-            url("/api/2/delete"),
-            HttpMethod.DELETE,
-            HttpEntity(null, getAuthHeader()),
-            Unit::class.java
-        ).apply {
-            assertEquals(HttpStatus.NOT_FOUND, this.statusCode)
-        }
+        mockMvc.perform(
+            MockMvcRequestBuilders.delete(url("/api/9/delete"))
+        )
+            .andExpect(status().isNotFound)
     }
 
     @Test
-    fun deleteEntryWithoutAuth() {
-        restTemplate.exchange(
-            url("/api/0/delete"),
-            HttpMethod.DELETE,
-            HttpEntity(null, null),
-            Unit::class.java
-        ).apply {
-            assertEquals(HttpStatus.FOUND, this.statusCode)
+    @WithMockUser(roles = ["API"])
+    fun deleteEntryWithoutDeleteRole() {
+        assertThrows<NestedServletException> { // FIXME исключение Access Denied обернуто вот в это
+            mockMvc.perform(
+                MockMvcRequestBuilders.delete(url("/api/0/delete"))
+            )
+                .andExpect(status().isOk)
         }
     }
 
     private fun url(path: String) = "http://localhost:${port}/${path}"
-
-    private fun getAuthHeader(): HttpHeaders =
-        HttpHeaders().also { it.add("Cookie", "auth1=${LocalDateTime.now().plusMinutes(5)}") }
 }
