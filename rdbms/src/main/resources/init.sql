@@ -1,12 +1,8 @@
 --liquibase formatted sql
 
---changeset rrmasgutov:init
+--changeset firebat2:init
 
-create table account1
-(
-    id bigserial constraint account_pk primary key,
-    amount int,
-    version int
-);
-
-
+INSERT INTO accounts.account (id, amount, version)
+VALUES (1, 1000, 0),
+       (2, 1500, 0),
+       (3, 9000, 0);

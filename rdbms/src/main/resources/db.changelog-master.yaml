@@ -1,5 +1,7 @@
 databaseChangeLog:
   - include:
+      file: create_accounts_table.sql
+  - include:
+      file: create_accounts_index.sql
+  - include:
       file: init.sql
-
-
