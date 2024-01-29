@@ -5,34 +5,43 @@ import java.sql.DriverManager
 import java.sql.SQLException
 
 class TransferConstraint {
-    private val decrement = "update account1 set amount = amount - ? where id = ?"
-    private val increment = "update account1 set amount = amount + ? where id = ?"
-    private val connection: Connection = DriverManager.getConnection(
-        "jdbc:postgresql://localhost:5432/db",
-        "postgres", ""
-    )
 
-    fun transfer(accountId1: Long, accountId2: Long, amount: Long) {
-        try {
-            connection.use { conn ->
-                update(conn, accountId1, amount, decrement)
-                update(conn, accountId2, amount, increment)
-                conn.commit()
-            }
-        } catch (ex: SQLException) {
-            println(ex.message)
-            connection.rollback()
-        }
+    companion object {
+        private const val decrement = "update account1 set amount = amount - ? where id = ?"
+        private const val increment = "update account1 set amount = amount + ? where id = ?"
+        val connection: Connection = DriverManager.getConnection(
+            "jdbc:postgresql://localhost:5432/db",
+            "postgres", "postgres"
+        )
     }
 
-    private fun update(conn: Connection, accountId2: Long, amount: Long, sql: String) {
-        val incPS = conn.prepareStatement(sql)
-        incPS.setLong(1, accountId2)
-        incPS.setLong(2, amount)
-        incPS.use { statement ->
-            val incRes = statement.executeUpdate()
-            if (incRes == 0) {
-                throw SQLException("Concurrent update")
+    fun transfer(accountId1: Long, accountId2: Long, amount: Long) {
+        connection.use { conn ->
+            val autoCommit = conn.autoCommit
+            try {
+                conn.autoCommit = false
+
+                val decrementPS = conn.prepareStatement(decrement)
+                decrementPS.setLong(1, amount)
+                decrementPS.setLong(2, accountId1)
+                val decrementUpdated = decrementPS.executeUpdate()
+                if (decrementUpdated == 0)
+                    throw SQLException("Concurrent update")
+
+                val incrementPS = conn.prepareStatement(increment)
+                incrementPS.setLong(1, amount)
+                incrementPS.setLong(2, accountId2)
+                val incrementUpdated = incrementPS.executeUpdate()
+                if (incrementUpdated == 0)
+                    throw SQLException("Concurrent update")
+
+                conn.commit()
+            } catch (exception: SQLException) {
+                println(exception.message)
+                exception.printStackTrace()
+                conn.rollback()
+            } finally {
+                conn.autoCommit = autoCommit
             }
         }
     }
