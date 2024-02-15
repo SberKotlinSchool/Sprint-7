@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>Login</title>
+</head>
+<body>
+<form th:action="@{/logon}" method="post">
+    <p><b>Зарегистрирваться</b></p>
+    <p>Логин: <label><input type="text" name="username" placeholder="Введите логин"/></label></p>
+    <p>Пароль: <label><input type="password" name="password" placeholder="Введите пароль"/></label></p>
+    <p>Роль: <label><input type="text" name="role" placeholder="Введите роль"/></label></p>
+    <p><input type="submit" value="Logon"/></p>
+</form></body>
+</html>
